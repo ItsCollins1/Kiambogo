@@ -18,31 +18,39 @@
   *{margin:0;padding:0;box-sizing:border-box;}
   body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
 
-  /* ── LOGIN ── */
-  .login-screen{position:fixed;inset:0;background:var(--primary-dark);display:flex;align-items:center;justify-content:center;z-index:1000;}
-  .login-screen.hidden{display:none;}
-  .login-box{background:#fff;border-radius:16px;width:380px;max-width:94vw;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4);}
-  .login-top{background:var(--primary);padding:2rem 1.75rem 1.5rem;text-align:center;border-bottom:3px solid var(--accent);}
-  .login-crest{width:56px;height:56px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto .75rem;border:3px solid rgba(255,255,255,.25);}
-  .login-top h2{font-family:'Merriweather',serif;color:#fff;font-size:1rem;line-height:1.4;}
-  .login-top p{color:rgba(255,255,255,.6);font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;margin-top:.3rem;}
-  .login-body{padding:1.75rem;}
-  .login-body label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.4rem;}
-  .login-body input{width:100%;padding:.65rem .9rem;border:1.5px solid var(--border);border-radius:8px;font-family:'Source Sans 3',sans-serif;font-size:.95rem;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s;margin-bottom:.35rem;}
-  .login-body input:focus{border-color:var(--primary);background:#fff;}
-  .login-err{font-size:.78rem;color:var(--red);min-height:1.1rem;margin-bottom:.75rem;}
-  .login-btn{width:100%;padding:.7rem;background:var(--primary);color:#fff;border:none;border-radius:8px;font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:background .2s;}
-  .login-btn:hover{background:var(--primary-light);}
-  .login-note{text-align:center;font-size:.7rem;color:var(--muted);margin-top:1rem;}
+  /* ── AUTH SCREENS ── */
+  .auth-screen{position:fixed;inset:0;background:var(--primary-dark);display:flex;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}
+  .auth-screen.hidden{display:none;}
+  .auth-box{background:#fff;border-radius:16px;width:400px;max-width:94vw;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4);}
+  .auth-top{background:var(--primary);padding:2rem 1.75rem 1.5rem;text-align:center;border-bottom:3px solid var(--accent);}
+  .auth-crest{width:56px;height:56px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto .75rem;border:3px solid rgba(255,255,255,.25);}
+  .auth-top h2{font-family:'Merriweather',serif;color:#fff;font-size:.95rem;line-height:1.4;}
+  .auth-top p{color:rgba(255,255,255,.6);font-size:.7rem;text-transform:uppercase;letter-spacing:1.5px;margin-top:.3rem;}
+  .auth-body{padding:1.75rem;}
+  .auth-tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:1.25rem;}
+  .auth-tab{flex:1;padding:.6rem;text-align:center;font-size:.82rem;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .18s;}
+  .auth-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+  .auth-panel{display:none;}.auth-panel.active{display:block;}
+  .fg{display:flex;flex-direction:column;gap:.3rem;margin-bottom:.85rem;}
+  .fg label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
+  .fg input{padding:.6rem .9rem;border:1.5px solid var(--border);border-radius:8px;font-family:'Source Sans 3',sans-serif;font-size:.9rem;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s;width:100%;}
+  .fg input:focus{border-color:var(--primary);background:#fff;}
+  .auth-err{font-size:.78rem;color:var(--red);min-height:1rem;margin-bottom:.5rem;}
+  .auth-ok{font-size:.78rem;color:var(--green);min-height:1rem;margin-bottom:.5rem;}
+  .auth-btn{width:100%;padding:.65rem;background:var(--primary);color:#fff;border:none;border-radius:8px;font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:background .2s;}
+  .auth-btn:hover{background:var(--primary-light);}
+  .auth-btn:disabled{background:var(--muted);cursor:not-allowed;}
+  .auth-link{text-align:center;font-size:.75rem;color:var(--muted);margin-top:.85rem;}
+  .auth-link a{color:var(--primary);cursor:pointer;font-weight:600;}
+  .auth-note{text-align:center;font-size:.7rem;color:var(--muted);margin-top:.75rem;line-height:1.5;}
 
-  /* ── SETUP BANNER ── */
-  .setup-banner{background:#7c3aed;color:#fff;padding:.65rem 1.5rem;font-size:.78rem;display:flex;align-items:center;gap:.75rem;justify-content:center;}
-  .setup-banner.hidden{display:none;}
-  .setup-banner a{color:#fbbf24;font-weight:700;cursor:pointer;text-decoration:underline;}
-
-  /* ── VIEWER BADGE ── */
-  .viewer-bar{background:#92400e;color:#fef3c7;padding:.4rem 1.5rem;font-size:.75rem;text-align:center;display:none;}
-  .viewer-bar.show{display:block;}
+  /* ── LOADING ── */
+  .loading-overlay{position:fixed;inset:0;background:rgba(18,41,82,.55);display:flex;align-items:center;justify-content:center;z-index:900;backdrop-filter:blur(2px);}
+  .loading-overlay.hidden{display:none;}
+  .loading-box{background:#fff;border-radius:12px;padding:2rem 2.5rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+  .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .85rem;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-box p{font-size:.875rem;color:var(--muted);}
 
   /* ── TOP BAR ── */
   .topbar{background:var(--primary-dark);height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;border-bottom:3px solid var(--accent);position:sticky;top:0;z-index:300;box-shadow:0 2px 12px rgba(0,0,0,.25);}
@@ -52,18 +60,26 @@
   .brand p{color:rgba(255,255,255,.5);font-size:.65rem;text-transform:uppercase;letter-spacing:1.5px;}
   .topbar-right{display:flex;gap:.65rem;align-items:center;}
   .yr-badge{color:rgba(255,255,255,.9);font-size:.78rem;border:1px solid rgba(255,255,255,.25);padding:.25rem .75rem;border-radius:4px;background:rgba(255,255,255,.08);font-weight:600;}
-  .role-pill{font-size:.7rem;font-weight:700;padding:.22rem .65rem;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;}
-  .role-pill.admin{background:var(--accent);color:var(--primary-dark);}
-  .role-pill.viewer{background:#92400e;color:#fef3c7;}
-  .btn-logout{background:transparent;color:rgba(255,255,255,.6);border:1.5px solid rgba(255,255,255,.2);border-radius:6px;padding:.3rem .75rem;font-size:.75rem;cursor:pointer;font-family:'Source Sans 3',sans-serif;transition:all .18s;}
-  .btn-logout:hover{color:#fff;border-color:rgba(255,255,255,.5);}
+  .sync-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;}
+  .sync-dot.err{background:var(--red);}
+  .sync-lbl{font-size:.72rem;color:rgba(255,255,255,.6);}
 
-  /* ── SYNC STATUS ── */
-  .sync-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:.3rem;}
-  .sync-dot.syncing{background:#f59e0b;animation:pulse 1s infinite;}
-  .sync-dot.error{background:var(--red);}
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-  .sync-label{font-size:.72rem;color:rgba(255,255,255,.6);}
+  /* ── PROFILE DROPDOWN ── */
+  .profile-wrap{position:relative;}
+  .profile-btn{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:8px;padding:.3rem .75rem;cursor:pointer;color:#fff;font-size:.78rem;font-family:'Source Sans 3',sans-serif;font-weight:600;transition:all .18s;}
+  .profile-btn:hover{background:rgba(255,255,255,.18);}
+  .profile-avatar{width:26px;height:26px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:var(--primary-dark);}
+  .profile-dropdown{position:absolute;top:calc(100% + .5rem);right:0;background:#fff;border-radius:10px;border:1px solid var(--border);box-shadow:0 8px 30px rgba(0,0,0,.15);width:240px;overflow:hidden;display:none;z-index:400;}
+  .profile-dropdown.open{display:block;animation:rise .18s ease;}
+  @keyframes rise{from{transform:translateY(8px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .pd-header{background:var(--primary);padding:.85rem 1rem;}
+  .pd-name{color:#fff;font-weight:700;font-size:.875rem;}
+  .pd-email{color:rgba(255,255,255,.6);font-size:.72rem;margin-top:.15rem;}
+  .pd-item{display:flex;align-items:center;gap:.65rem;padding:.7rem 1rem;font-size:.82rem;color:var(--text);cursor:pointer;transition:background .15s;border-bottom:1px solid #f1f5f9;}
+  .pd-item:last-child{border-bottom:none;}
+  .pd-item:hover{background:#f8fafc;}
+  .pd-item.danger{color:var(--red);}
+  .pd-item.danger:hover{background:var(--red-bg);}
 
   /* ── TABS ── */
   .tabs-nav{background:var(--primary);display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none;border-bottom:2px solid rgba(255,255,255,.08);position:sticky;top:54px;z-index:200;}
@@ -78,13 +94,17 @@
   .main{flex:1;padding:1.5rem;max-width:1280px;width:100%;margin:0 auto;}
   .page{display:none;}.page.active{display:block;}
 
-  /* ── LOADING OVERLAY ── */
-  .loading-overlay{position:fixed;inset:0;background:rgba(18,41,82,.5);display:flex;align-items:center;justify-content:center;z-index:900;backdrop-filter:blur(2px);}
-  .loading-overlay.hidden{display:none;}
-  .loading-box{background:#fff;border-radius:12px;padding:2rem 2.5rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
-  .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .85rem;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-  .loading-box p{font-size:.875rem;color:var(--muted);}
+  /* ── PROFILE PAGE ── */
+  .profile-page-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+  .profile-card{background:#fff;border-radius:10px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+  .profile-card-head{background:var(--primary);padding:.85rem 1.25rem;}
+  .profile-card-head h3{font-family:'Merriweather',serif;color:#fff;font-size:.9rem;}
+  .profile-card-body{padding:1.25rem;}
+  .profile-info-row{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid #f1f5f9;font-size:.875rem;}
+  .profile-info-row:last-child{border-bottom:none;}
+  .profile-info-label{color:var(--muted);font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+  .profile-info-value{color:var(--text);font-weight:600;}
+  .profile-avatar-big{width:64px;height:64px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.75rem;font-weight:700;color:var(--primary-dark);margin:0 auto 1rem;}
 
   /* ── OVERVIEW STATS ── */
   .ov-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
@@ -133,6 +153,7 @@
   .btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);}.btn-ghost:hover{border-color:var(--primary);color:var(--primary);}
   .btn-gw{background:transparent;color:rgba(255,255,255,.7);border:1.5px solid rgba(255,255,255,.22);}.btn-gw:hover{border-color:var(--accent);color:var(--accent);}
   .btn-promote{background:#7c3aed;color:#fff;}.btn-promote:hover{background:#6d28d9;}
+  .btn-danger{background:var(--red-bg);color:var(--red);border:1.5px solid #fecaca;}.btn-danger:hover{background:#fecaca;}
   .btn-sm{padding:.28rem .65rem;font-size:.75rem;border-radius:5px;}
   .btn-gs{background:var(--green-bg);color:var(--green);}.btn-gs:hover{background:#bbf7d0;}
   .btn-rs{background:var(--red-bg);color:var(--red);}.btn-rs:hover{background:#fecaca;}
@@ -162,7 +183,6 @@
   .overlay{position:fixed;inset:0;background:rgba(18,41,82,.65);display:none;align-items:center;justify-content:center;z-index:500;backdrop-filter:blur(3px);}
   .overlay.open{display:flex;}
   .modal{background:#fff;border-radius:14px;width:500px;max-width:96vw;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,.3);animation:rise .22s ease;}
-  @keyframes rise{from{transform:translateY(16px);opacity:0;}to{transform:translateY(0);opacity:1;}}
   .modal-head{background:var(--primary);padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;}
   .modal-head h3{font-family:'Merriweather',serif;color:#fff;font-size:1rem;}
   .mc{background:rgba(255,255,255,.15);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;}
@@ -170,10 +190,6 @@
   .modal-body{padding:1.4rem;}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:.9rem;}
   .form-row.full{grid-template-columns:1fr;}
-  .fg{display:flex;flex-direction:column;gap:.3rem;}
-  .fg label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
-  .fg input,.fg select{padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:7px;font-family:'Source Sans 3',sans-serif;font-size:.875rem;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s;width:100%;}
-  .fg input:focus,.fg select:focus{border-color:var(--primary);background:#fff;}
   .modal-foot{padding:.9rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:.65rem;background:#f8fafc;}
 
   /* ── PROMOTE MODAL ── */
@@ -186,21 +202,6 @@
   .promote-warn{background:var(--yellow-bg);border:1px solid #fcd34d;border-radius:8px;padding:.75rem 1rem;font-size:.8rem;color:var(--yellow);margin-top:.9rem;}
   .promote-foot{padding:.9rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:.65rem;background:#faf9ff;}
 
-  /* ── SETUP MODAL ── */
-  .setup-box{background:#fff;border-radius:14px;width:560px;max-width:96vw;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,.4);animation:rise .25s ease;max-height:90vh;overflow-y:auto;}
-  .setup-head{background:#7c3aed;padding:1.1rem 1.4rem;display:flex;align-items:center;gap:.75rem;position:sticky;top:0;}
-  .setup-head h3{font-family:'Merriweather',serif;color:#fff;font-size:1rem;}
-  .setup-body{padding:1.5rem;}
-  .step{margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
-  .step:last-child{border-bottom:none;margin-bottom:0;}
-  .step-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--primary);color:#fff;border-radius:50%;font-size:.75rem;font-weight:700;margin-right:.5rem;flex-shrink:0;}
-  .step h4{font-size:.9rem;font-weight:700;color:var(--primary);margin-bottom:.5rem;display:flex;align-items:center;}
-  .step p{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:.5rem;}
-  .step code{background:#f1f5f9;border:1px solid var(--border);border-radius:6px;padding:.5rem .75rem;font-size:.78rem;display:block;margin:.5rem 0;font-family:monospace;color:var(--primary-dark);word-break:break-all;white-space:pre-wrap;}
-  .step input{width:100%;padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:7px;font-family:monospace;font-size:.82rem;color:var(--text);background:var(--bg);outline:none;margin-top:.35rem;}
-  .step input:focus{border-color:#7c3aed;background:#fff;}
-  .setup-foot{padding:.9rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:.65rem;background:#faf9ff;position:sticky;bottom:0;}
-
   /* ── ARCHIVE ── */
   .archive-banner{background:linear-gradient(135deg,#78350f,#92400e);border-radius:10px;padding:1rem 1.35rem;margin-bottom:1rem;color:#fef3c7;display:flex;align-items:center;gap:.85rem;}
   .archive-banner .icon{font-size:1.5rem;}
@@ -212,19 +213,24 @@
   /* ── PRINT ── */
   .print-header{display:none;}
   @media print{
-    .login-screen,.setup-banner,.topbar-right,.tabs-nav,.toolbar,.acts,.overlay,.btn,.btn-sm,.viewer-bar{display:none!important;}
+    .auth-screen,.topbar-right,.tabs-nav,.toolbar,.acts,.overlay,.btn,.btn-sm{display:none!important;}
     body{background:#fff;}
     .topbar{position:relative;top:auto;height:auto;padding:.75rem 1.5rem;print-color-adjust:exact;-webkit-print-color-adjust:exact;}
     .main{padding:.5rem;max-width:100%;}
     .page{display:block!important;}
     .card{box-shadow:none;border:1px solid #ccc;margin-bottom:1rem;page-break-inside:avoid;}
-    .ov-grid{page-break-inside:avoid;}
     th,td{font-size:.7rem;padding:.4rem .6rem;}
     .print-header{display:block!important;text-align:center;padding:.5rem 0 1rem;border-bottom:2px solid #C8972B;margin-bottom:1rem;}
     .print-header h2{font-family:'Merriweather',serif;font-size:1.1rem;color:#122952;}
     .print-header p{font-size:.75rem;color:#64748b;margin-top:.2rem;}
   }
-  @media(max-width:768px){.ov-grid{grid-template-columns:1fr 1fr;}.main{padding:1rem;}.form-row{grid-template-columns:1fr;}.mini-stats{gap:.75rem;}}
+  @media(max-width:768px){
+    .ov-grid{grid-template-columns:1fr 1fr;}
+    .main{padding:1rem;}
+    .form-row{grid-template-columns:1fr;}
+    .mini-stats{gap:.75rem;}
+    .profile-page-grid{grid-template-columns:1fr;}
+  }
 </style>
 </head>
 <body>
@@ -233,37 +239,57 @@
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-box">
     <div class="spinner"></div>
-    <p id="loadingMsg">Connecting to database…</p>
+    <p id="loadingMsg">Loading…</p>
   </div>
 </div>
 
-<!-- ══ LOGIN ══ -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-box">
-    <div class="login-top">
-      <div class="login-crest">🏫</div>
+<!-- ══ AUTH SCREEN ══ -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-box">
+    <div class="auth-top">
+      <div class="auth-crest">🏫</div>
       <h2>Kiambogo Primary and Junior School</h2>
       <p>Fees Management System</p>
     </div>
-    <div class="login-body">
-      <label>Password</label>
-      <input type="password" id="loginPw" placeholder="Enter password…" onkeydown="if(event.key==='Enter')doLogin()">
-      <div class="login-err" id="loginErr"></div>
-      <button class="login-btn" onclick="doLogin()">🔓 Sign In</button>
-      <div class="login-note">Contact your administrator if you have forgotten the password.</div>
+    <div class="auth-body">
+      <div class="auth-tabs">
+        <div class="auth-tab active" onclick="showAuthTab('login')">Sign In</div>
+        <div class="auth-tab" onclick="showAuthTab('signup')">Sign Up</div>
+        <div class="auth-tab" onclick="showAuthTab('reset')">Reset Password</div>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="auth-panel active" id="panel-login">
+        <div class="fg"><label>Email Address</label><input type="email" id="login-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <div class="fg"><label>Password</label><input type="password" id="login-pw" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <div class="auth-err" id="login-err"></div>
+        <button class="auth-btn" id="login-btn" onclick="doLogin()">🔓 Sign In</button>
+        <div class="auth-note">Only authorised accounts can access this system.</div>
+      </div>
+
+      <!-- SIGNUP -->
+      <div class="auth-panel" id="panel-signup">
+        <div class="fg"><label>Full Name</label><input type="text" id="signup-name" placeholder="e.g. Collins Mwiti"></div>
+        <div class="fg"><label>Email Address</label><input type="email" id="signup-email" placeholder="your@email.com"></div>
+        <div class="fg"><label>Password</label><input type="password" id="signup-pw" placeholder="Min 8 characters"></div>
+        <div class="fg"><label>Confirm Password</label><input type="password" id="signup-pw2" placeholder="Repeat password"></div>
+        <div class="fg"><label>Admin Access Code</label><input type="password" id="signup-code" placeholder="Enter access code"></div>
+        <div class="auth-err" id="signup-err"></div>
+        <div class="auth-ok" id="signup-ok"></div>
+        <button class="auth-btn" id="signup-btn" onclick="doSignup()">✉️ Create Account</button>
+        <div class="auth-note">An access code is required to create an account. Contact the system administrator if you don't have one.</div>
+      </div>
+
+      <!-- RESET -->
+      <div class="auth-panel" id="panel-reset">
+        <div class="fg"><label>Email Address</label><input type="email" id="reset-email" placeholder="your@email.com"></div>
+        <div class="auth-err" id="reset-err"></div>
+        <div class="auth-ok" id="reset-ok"></div>
+        <button class="auth-btn" id="reset-btn" onclick="doReset()">📧 Send Reset Link</button>
+        <div class="auth-note">A password reset link will be sent to your email address.</div>
+      </div>
     </div>
   </div>
-</div>
-
-<!-- ══ SETUP BANNER ══ -->
-<div class="setup-banner" id="setupBanner">
-  ⚠️ Supabase is not yet configured — data is being saved locally only.
-  <a onclick="openSetupModal()">Click here to connect your database →</a>
-</div>
-
-<!-- ══ VIEWER BAR ══ -->
-<div class="viewer-bar" id="viewerBar">
-  👁️ You are in <strong>View Only</strong> mode. You can see all records but cannot make changes.
 </div>
 
 <!-- ══ PRINT HEADER ══ -->
@@ -284,13 +310,28 @@
   </div>
   <div class="topbar-right">
     <span class="sync-dot" id="syncDot"></span>
-    <span class="sync-label" id="syncLabel">Offline</span>
+    <span class="sync-lbl" id="syncLbl">Live</span>
     <span class="yr-badge" id="yrBadge"></span>
-    <span class="role-pill" id="rolePill"></span>
     <button class="btn btn-gw" onclick="exportAll()">⬇️ Export</button>
     <button class="btn btn-gw" onclick="printReport()">🖨️ Print</button>
-    <button class="btn btn-gw admin-only" onclick="openAddModal()">+ Add Student</button>
-    <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+    <button class="btn btn-gw" onclick="openAddModal()">+ Add Student</button>
+    <!-- PROFILE -->
+    <div class="profile-wrap">
+      <button class="profile-btn" onclick="toggleProfile()">
+        <div class="profile-avatar" id="profileAvatar">?</div>
+        <span id="profileName">Account</span>
+        ▾
+      </button>
+      <div class="profile-dropdown" id="profileDropdown">
+        <div class="pd-header">
+          <div class="pd-name" id="pd-name">—</div>
+          <div class="pd-email" id="pd-email">—</div>
+        </div>
+        <div class="pd-item" onclick="switchTab('profile')">👤 My Profile</div>
+        <div class="pd-item" onclick="switchTab('profile');setTimeout(()=>document.getElementById('change-pw-section').scrollIntoView({behavior:'smooth'}),200)">🔑 Change Password</div>
+        <div class="pd-item danger" onclick="doLogout()">🚪 Sign Out</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -307,7 +348,7 @@
       <div class="ov-stat r"><div class="ov-label">Unpaid / Partial</div><div class="ov-num" id="ov-unpaid">0</div><div class="ov-sub" id="ov-unpaid-pct">—</div></div>
       <div class="ov-stat a"><div class="ov-label">Total Outstanding</div><div class="ov-num" id="ov-owed">KSh 0</div><div class="ov-sub">Balance owed</div></div>
     </div>
-    <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;" class="admin-only">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
       <button class="btn btn-promote" onclick="openPromoteModal()">🎓 Promote All Students to Next Year</button>
     </div>
     <div class="card">
@@ -348,9 +389,70 @@
       </div>
     </div>
   </div>
+
+  <!-- PROFILE PAGE -->
+  <div class="page" id="page-profile">
+    <div class="profile-page-grid">
+
+      <!-- Account Info -->
+      <div class="profile-card">
+        <div class="profile-card-head"><h3>👤 Account Information</h3></div>
+        <div class="profile-card-body">
+          <div class="profile-avatar-big" id="profile-avatar-big">?</div>
+          <div class="profile-info-row"><span class="profile-info-label">Full Name</span><span class="profile-info-value" id="pi-name">—</span></div>
+          <div class="profile-info-row"><span class="profile-info-label">Email</span><span class="profile-info-value" id="pi-email">—</span></div>
+          <div class="profile-info-row"><span class="profile-info-label">Role</span><span class="profile-info-value">Administrator</span></div>
+          <div class="profile-info-row"><span class="profile-info-label">School</span><span class="profile-info-value">Kiambogo Primary & Junior</span></div>
+          <div style="margin-top:1rem;">
+            <button class="btn btn-danger" onclick="doLogout()" style="width:100%">🚪 Sign Out</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Change Password -->
+      <div class="profile-card" id="change-pw-section">
+        <div class="profile-card-head"><h3>🔑 Change Password</h3></div>
+        <div class="profile-card-body">
+          <div class="fg"><label>New Password</label><input type="password" id="new-pw" placeholder="Min 8 characters"></div>
+          <div class="fg"><label>Confirm New Password</label><input type="password" id="new-pw2" placeholder="Repeat new password"></div>
+          <div class="auth-err" id="pw-change-err"></div>
+          <div class="auth-ok" id="pw-change-ok"></div>
+          <button class="btn btn-primary" onclick="changePassword()" style="width:100%">🔑 Update Password</button>
+          <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border);">
+            <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem;">Or send a password reset link to your email:</p>
+            <button class="btn btn-ghost" onclick="sendResetFromProfile()" style="width:100%">📧 Email Reset Link</button>
+            <div class="auth-ok" id="profile-reset-ok" style="margin-top:.5rem;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Info -->
+      <div class="profile-card">
+        <div class="profile-card-head"><h3>📊 System Summary</h3></div>
+        <div class="profile-card-body">
+          <div class="profile-info-row"><span class="profile-info-label">Academic Year</span><span class="profile-info-value" id="pi-year">—</span></div>
+          <div class="profile-info-row"><span class="profile-info-label">Total Students</span><span class="profile-info-value" id="pi-students">—</span></div>
+          <div class="profile-info-row"><span class="profile-info-label">Total Archived</span><span class="profile-info-value" id="pi-archived">—</span></div>
+          <div class="profile-info-row"><span class="profile-info-label">Database</span><span class="profile-info-value" style="color:var(--green)">● Connected</span></div>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="profile-card">
+        <div class="profile-card-head" style="background:var(--red);"><h3>⚠️ Danger Zone</h3></div>
+        <div class="profile-card-body">
+          <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">These actions are irreversible. Please be absolutely sure before proceeding.</p>
+          <button class="btn btn-danger" onclick="openPromoteModal()" style="width:100%;margin-bottom:.75rem;">🎓 Promote All Students (Year End)</button>
+          <button class="btn btn-danger" onclick="confirmClearArchive()" style="width:100%">🗑️ Clear All Archived Records</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
-<!-- ══ ADD/EDIT MODAL ══ -->
+<!-- ══ ADD/EDIT STUDENT MODAL ══ -->
 <div class="overlay" id="overlay" onclick="bgClose(event)">
   <div class="modal">
     <div class="modal-head"><h3 id="modal-title">Add New Student</h3><button class="mc" onclick="closeModal()">✕</button></div>
@@ -380,7 +482,7 @@
     <div class="promote-body">
       <p>This will promote <strong>all active students</strong> to the next class for the new academic year:</p>
       <div class="promote-list" id="promote-preview"></div>
-      <div class="promote-warn">⚠️ <strong>Grade 9 students</strong> will be archived. Fees reset to KSh 0 for the new year. This cannot be undone — export your data first if needed.</div>
+      <div class="promote-warn">⚠️ <strong>Grade 9 students</strong> will be archived. Fees reset to KSh 0 for the new year. This cannot be undone.</div>
     </div>
     <div class="promote-foot">
       <button class="btn btn-ghost" onclick="closePromoteModal()">Cancel</button>
@@ -389,289 +491,233 @@
   </div>
 </div>
 
-<!-- ══ SETUP MODAL ══ -->
-<div class="overlay" id="setupOverlay" onclick="if(event.target===this)closeSetupModal()">
-  <div class="setup-box">
-    <div class="setup-head"><span style="font-size:1.3rem">🔧</span><h3>Connect Supabase Database</h3></div>
-    <div class="setup-body">
-
-      <div class="step">
-        <h4><span class="step-num">1</span>Create a Supabase account</h4>
-        <p>Go to <strong>supabase.com</strong>, click <em>Start your project</em>, and sign up for free. Then create a new project — give it any name (e.g. "Kiambogo Fees"). Wait about 2 minutes for it to be ready.</p>
-      </div>
-
-      <div class="step">
-        <h4><span class="step-num">2</span>Create the database tables</h4>
-        <p>Inside your Supabase project, click <strong>SQL Editor</strong> in the left sidebar, then paste and run this SQL:</p>
-        <code>-- Students table
-CREATE TABLE students (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  cls TEXT NOT NULL,
-  adm TEXT,
-  total NUMERIC DEFAULT 0,
-  paid NUMERIC DEFAULT 0,
-  phone TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Archive table
-CREATE TABLE archived_students (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  cls TEXT,
-  adm TEXT,
-  total NUMERIC DEFAULT 0,
-  paid NUMERIC DEFAULT 0,
-  phone TEXT,
-  graduated_year INT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Allow public read/write (row level security off for simplicity)
-ALTER TABLE students ENABLE ROW LEVEL SECURITY;
-ALTER TABLE archived_students ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow all" ON students FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Allow all" ON archived_students FOR ALL USING (true) WITH CHECK (true);</code>
-        <p>Click the green <strong>Run</strong> button. You should see "Success".</p>
-      </div>
-
-      <div class="step">
-        <h4><span class="step-num">3</span>Get your Project URL</h4>
-        <p>Go to <strong>Project Settings → API</strong>. Copy the <em>Project URL</em> (looks like https://xxxxxx.supabase.co) and paste it below:</p>
-        <input type="text" id="setup-url" placeholder="https://xxxxxx.supabase.co">
-      </div>
-
-      <div class="step">
-        <h4><span class="step-num">4</span>Get your Anon Key</h4>
-        <p>On the same page, copy the <em>anon public</em> key (a long string starting with "eyJ…") and paste it below:</p>
-        <input type="text" id="setup-key" placeholder="eyJhbGciOiJIUzI1NiIs...">
-      </div>
-
-      <div class="step">
-        <h4><span class="step-num">5</span>Set your passwords</h4>
-        <p><strong>Admin password</strong> (full access — keep this private):</p>
-        <input type="text" id="setup-admin-pw" placeholder="e.g. Kiambogo@Admin2025">
-        <p style="margin-top:.75rem"><strong>Viewer password</strong> (read-only — safe to share):</p>
-        <input type="text" id="setup-viewer-pw" placeholder="e.g. KiambogoView2025">
-      </div>
-
-    </div>
-    <div class="setup-foot">
-      <button class="btn btn-ghost" onclick="closeSetupModal()">Cancel</button>
-      <button class="btn" style="background:#7c3aed;color:#fff" onclick="saveSetup()">💾 Save & Connect</button>
-    </div>
-  </div>
-</div>
-
 <script>
 // ══════════════════════════════════════════════
-// CONFIG — stored in localStorage after setup
+// ⚙️ CONFIGURATION — hardcoded for reliability
 // ══════════════════════════════════════════════
-const CLASSES     = ['Pre-Primary 1','Pre-Primary 2','Grade 1','Grade 2','Grade 3','Grade 4','Grade 5','Grade 6','Grade 7','Grade 8','Grade 9'];
-const CFG_KEY     = 'kpjs_config_v2';
-const SESSION_KEY = 'kpjs_session_v2';
-const YEAR_KEY    = 'kpjs_year_v2';
-const LOCAL_KEY   = 'kpjs_local_v2';       // fallback local storage
-const LOCAL_ARCH  = 'kpjs_local_arch_v2';
+const SUPABASE_URL = 'https://dgnzmzwmdlshvvnbzkvx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnbnptendtZGxzaHZ2bmJ6a3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0OTI4MzgsImV4cCI6MjA4NzA2ODgzOH0.PwEyYwR7dfoppGPk0qQ8B361ayOFKoi9XK5IVn-b7ds';
 
-let cfg = JSON.parse(localStorage.getItem(CFG_KEY) || '{}');
-// cfg = { url, key, adminPw, viewerPw }
+// ⚠️ CHANGE THIS before uploading — your secret developer master password
+// This lets you log into any system you build using this code
+const MASTER_PASSWORD = 'Collins24!';
 
-let currentRole  = null; // 'admin' | 'viewer'
-let students     = [];
-let archived     = [];
-let activeTab    = 'overview';
-let editId       = null;
-let supabaseReady = false;
+// Access code required to sign up (share only with authorised people)
+const SIGNUP_ACCESS_CODE = 'KiambogoAccess2025';
 
-// ── SUPABASE HELPERS ──
-async function sbFetch(path, options={}) {
-  if (!supabaseReady) return null;
-  const res = await fetch(cfg.url + '/rest/v1/' + path, {
-    ...options,
-    headers: {
-      'apikey': cfg.key,
-      'Authorization': 'Bearer ' + cfg.key,
-      'Content-Type': 'application/json',
-      'Prefer': options.prefer || '',
-      ...(options.headers||{})
-    }
-  });
-  if (!res.ok) { console.error('Supabase error', res.status, await res.text()); return null; }
+const CLASSES = ['Pre-Primary 1','Pre-Primary 2','Grade 1','Grade 2','Grade 3','Grade 4','Grade 5','Grade 6','Grade 7','Grade 8','Grade 9'];
+const YEAR_KEY = 'kpjs_year_v3';
+
+let students  = [];
+let archived  = [];
+let activeTab = 'overview';
+let editId    = null;
+let currentUser = null;
+
+// ══════════════════════════════════════════════
+// SUPABASE API
+// ══════════════════════════════════════════════
+async function sbFetch(path, opts={}) {
+  const headers = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': 'Bearer ' + (currentUser?.access_token || SUPABASE_KEY),
+    'Content-Type': 'application/json',
+    ...(opts.headers||{})
+  };
+  const res = await fetch(SUPABASE_URL + path, {...opts, headers});
   const text = await res.text();
+  if (!res.ok) { console.error('SB error', res.status, text); return null; }
   return text ? JSON.parse(text) : [];
 }
 
+async function sbAuth(path, body) {
+  const res = await fetch(SUPABASE_URL + '/auth/v1' + path, {
+    method:'POST',
+    headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error_description || data.msg || 'Auth error');
+  return data;
+}
+
 async function sbGetAll(table) {
-  return await sbFetch(table + '?select=*&order=name.asc') || [];
+  return await sbFetch('/rest/v1/' + table + '?select=*&order=name.asc') || [];
 }
 
 async function sbUpsert(table, row) {
-  return await sbFetch(table, {
-    method:'POST', prefer:'resolution=merge-duplicates',
+  return await sbFetch('/rest/v1/' + table, {
+    method:'POST',
     headers:{'Prefer':'resolution=merge-duplicates,return=representation'},
     body: JSON.stringify(row)
   });
 }
 
 async function sbDelete(table, id) {
-  return await sbFetch(table + '?id=eq.' + id, { method:'DELETE' });
-}
-
-// ── SYNC STATUS ──
-function setSyncing() {
-  document.getElementById('syncDot').className='sync-dot syncing';
-  document.getElementById('syncLabel').textContent='Syncing…';
-}
-function setSynced() {
-  document.getElementById('syncDot').className='sync-dot';
-  document.getElementById('syncLabel').textContent='Live';
-}
-function setSyncError() {
-  document.getElementById('syncDot').className='sync-dot error';
-  document.getElementById('syncLabel').textContent='Offline';
-}
-
-// ── PERSIST (local fallback + cloud) ──
-function persistLocal() {
-  localStorage.setItem(LOCAL_KEY, JSON.stringify(students));
-  localStorage.setItem(LOCAL_ARCH, JSON.stringify(archived));
-}
-
-async function pushStudent(s) {
-  persistLocal();
-  if (!supabaseReady) return;
-  setSyncing();
-  const res = await sbUpsert('students', {
-    id:s.id, name:s.name, cls:s.cls, adm:s.adm||'',
-    total:s.total, paid:s.paid, phone:s.phone||''
-  });
-  res ? setSynced() : setSyncError();
-}
-
-async function deleteStudent(id) {
-  students = students.filter(s=>s.id!==id);
-  persistLocal();
-  if (!supabaseReady) return;
-  setSyncing();
-  const res = await sbDelete('students', id);
-  res!==null ? setSynced() : setSyncError();
-}
-
-async function pushArchive(s) {
-  persistLocal();
-  if (!supabaseReady) return;
-  await sbUpsert('archived_students', {
-    id:s.id, name:s.name, cls:s.cls, adm:s.adm||'',
-    total:s.total, paid:s.paid, phone:s.phone||'',
-    graduated_year:s.graduatedYear||getCurrentYear()
-  });
-}
-
-// ── LOAD DATA ──
-async function loadData() {
-  if (supabaseReady) {
-    setSyncing();
-    const [s, a] = await Promise.all([sbGetAll('students'), sbGetAll('archived_students')]);
-    if (s!==null) {
-      students = s.map(r=>({id:r.id,name:r.name,cls:r.cls,adm:r.adm,total:Number(r.total),paid:Number(r.paid),phone:r.phone}));
-      archived = (a||[]).map(r=>({id:r.id,name:r.name,cls:r.cls,adm:r.adm,total:Number(r.total),paid:Number(r.paid),phone:r.phone,graduatedYear:r.graduated_year}));
-      persistLocal();
-      setSynced();
-    } else {
-      setSyncError();
-      loadLocalFallback();
-    }
-  } else {
-    loadLocalFallback();
-    setSyncError();
-  }
-}
-
-function loadLocalFallback() {
-  students = JSON.parse(localStorage.getItem(LOCAL_KEY)||'[]');
-  archived = JSON.parse(localStorage.getItem(LOCAL_ARCH)||'[]');
-}
-
-// ══════════════════════════════════════════════
-// SETUP
-// ══════════════════════════════════════════════
-function openSetupModal() { document.getElementById('setupOverlay').classList.add('open'); }
-function closeSetupModal() { document.getElementById('setupOverlay').classList.remove('open'); }
-
-function saveSetup() {
-  const url    = document.getElementById('setup-url').value.trim().replace(/\/$/,'');
-  const key    = document.getElementById('setup-key').value.trim();
-  const adminPw  = document.getElementById('setup-admin-pw').value.trim();
-  const viewerPw = document.getElementById('setup-viewer-pw').value.trim();
-
-  if (!url || !key)     { alert('Please enter both the Supabase URL and key.'); return; }
-  if (!adminPw)         { alert('Please set an admin password.'); return; }
-  if (!viewerPw)        { alert('Please set a viewer password.'); return; }
-  if (adminPw===viewerPw){ alert('Admin and viewer passwords must be different.'); return; }
-
-  cfg = { url, key, adminPw, viewerPw };
-  localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
-  closeSetupModal();
-  document.getElementById('setupBanner').classList.add('hidden');
-  supabaseReady = true;
-  loadData().then(refreshAll);
-  alert('✅ Supabase connected! Your data will now sync to the cloud.');
+  return await sbFetch('/rest/v1/' + table + '?id=eq.' + encodeURIComponent(id), {method:'DELETE'});
 }
 
 // ══════════════════════════════════════════════
 // AUTH
 // ══════════════════════════════════════════════
-function getAdminPw()  { return cfg.adminPw  || 'kiambogo2025'; }
-function getViewerPw() { return cfg.viewerPw || 'kiambogoview'; }
-
-function doLogin() {
-  const pw = document.getElementById('loginPw').value;
-  if (pw === getAdminPw())  { setRole('admin');  } 
-  else if (pw === getViewerPw()) { setRole('viewer'); }
-  else {
-    document.getElementById('loginErr').textContent = '✕ Incorrect password. Please try again.';
-    document.getElementById('loginPw').value='';
-    document.getElementById('loginPw').focus();
-    return;
-  }
-  document.getElementById('loginPw').value='';
-  document.getElementById('loginErr').textContent='';
+function showAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i)=>{
+    const tabs=['login','signup','reset'];
+    t.classList.toggle('active', tabs[i]===tab);
+  });
+  document.querySelectorAll('.auth-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
 }
 
-function setRole(role) {
-  currentRole = role;
-  sessionStorage.setItem(SESSION_KEY, role);
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('rolePill').textContent = role==='admin'?'Admin':'View Only';
-  document.getElementById('rolePill').className = 'role-pill '+(role==='admin'?'admin':'viewer');
-  document.getElementById('viewerBar').className = role==='viewer'?'viewer-bar show':'viewer-bar';
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pw    = document.getElementById('login-pw').value;
+  const errEl = document.getElementById('login-err');
+  const btn   = document.getElementById('login-btn');
+  errEl.textContent='';
 
-  // Hide admin-only elements for viewers
-  document.querySelectorAll('.admin-only').forEach(el=>{
-    el.style.display = role==='admin'?'':'none';
-  });
+  // Developer master password check
+  if (pw === MASTER_PASSWORD) {
+    currentUser = { email:'developer@master', access_token: SUPABASE_KEY, user_metadata:{full_name:'Developer'} };
+    onLoginSuccess();
+    return;
+  }
 
-  showLoading('Loading student records…');
-  loadData().then(()=>{
-    refreshAll();
-    hideLoading();
-    checkYearRollover();
-  });
+  if (!email || !pw) { errEl.textContent='Please enter email and password.'; return; }
+  btn.disabled=true; btn.textContent='Signing in…';
+  try {
+    const data = await sbAuth('/token?grant_type=password', {email, password:pw});
+    currentUser = {...data.user, access_token: data.access_token};
+    onLoginSuccess();
+  } catch(e) {
+    errEl.textContent = '✕ ' + (e.message==='Invalid login credentials' ? 'Incorrect email or password.' : e.message);
+  }
+  btn.disabled=false; btn.textContent='🔓 Sign In';
+}
+
+async function doSignup() {
+  const name  = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const pw    = document.getElementById('signup-pw').value;
+  const pw2   = document.getElementById('signup-pw2').value;
+  const code  = document.getElementById('signup-code').value.trim();
+  const errEl = document.getElementById('signup-err');
+  const okEl  = document.getElementById('signup-ok');
+  const btn   = document.getElementById('signup-btn');
+  errEl.textContent=''; okEl.textContent='';
+
+  if (!name)              { errEl.textContent='Please enter your full name.'; return; }
+  if (!email)             { errEl.textContent='Please enter your email.'; return; }
+  if (pw.length < 8)      { errEl.textContent='Password must be at least 8 characters.'; return; }
+  if (pw !== pw2)         { errEl.textContent='Passwords do not match.'; return; }
+  if (code !== SIGNUP_ACCESS_CODE) { errEl.textContent='✕ Invalid access code. Contact the administrator.'; return; }
+
+  btn.disabled=true; btn.textContent='Creating account…';
+  try {
+    await sbAuth('/signup', {email, password:pw, data:{full_name:name}});
+    okEl.textContent='✅ Account created! Check your email to verify, then sign in.';
+    document.getElementById('signup-name').value='';
+    document.getElementById('signup-email').value='';
+    document.getElementById('signup-pw').value='';
+    document.getElementById('signup-pw2').value='';
+    document.getElementById('signup-code').value='';
+  } catch(e) {
+    errEl.textContent='✕ ' + e.message;
+  }
+  btn.disabled=false; btn.textContent='✉️ Create Account';
+}
+
+async function doReset() {
+  const email = document.getElementById('reset-email').value.trim();
+  const errEl = document.getElementById('reset-err');
+  const okEl  = document.getElementById('reset-ok');
+  const btn   = document.getElementById('reset-btn');
+  errEl.textContent=''; okEl.textContent='';
+  if (!email) { errEl.textContent='Please enter your email address.'; return; }
+  btn.disabled=true; btn.textContent='Sending…';
+  try {
+    await fetch(SUPABASE_URL+'/auth/v1/recover',{
+      method:'POST',
+      headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email})
+    });
+    okEl.textContent='✅ Reset link sent! Check your email inbox.';
+  } catch(e) { errEl.textContent='✕ Could not send reset email.'; }
+  btn.disabled=false; btn.textContent='📧 Send Reset Link';
+}
+
+async function sendResetFromProfile() {
+  const okEl = document.getElementById('profile-reset-ok');
+  okEl.textContent='Sending…';
+  try {
+    await fetch(SUPABASE_URL+'/auth/v1/recover',{
+      method:'POST',
+      headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email: currentUser.email})
+    });
+    okEl.textContent='✅ Reset link sent to ' + currentUser.email;
+  } catch(e) { okEl.textContent='✕ Could not send reset email.'; okEl.style.color='var(--red)'; }
+}
+
+async function changePassword() {
+  const pw   = document.getElementById('new-pw').value;
+  const pw2  = document.getElementById('new-pw2').value;
+  const errEl= document.getElementById('pw-change-err');
+  const okEl = document.getElementById('pw-change-ok');
+  errEl.textContent=''; okEl.textContent='';
+  if (pw.length < 8)  { errEl.textContent='Password must be at least 8 characters.'; return; }
+  if (pw !== pw2)     { errEl.textContent='Passwords do not match.'; return; }
+  try {
+    const res = await fetch(SUPABASE_URL+'/auth/v1/user',{
+      method:'PUT',
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+currentUser.access_token,'Content-Type':'application/json'},
+      body:JSON.stringify({password:pw})
+    });
+    if (res.ok) {
+      okEl.textContent='✅ Password updated successfully!';
+      document.getElementById('new-pw').value='';
+      document.getElementById('new-pw2').value='';
+    } else { errEl.textContent='✕ Could not update password. Try the email reset option.'; }
+  } catch(e) { errEl.textContent='✕ Error updating password.'; }
 }
 
 function doLogout() {
-  currentRole=null;
-  sessionStorage.removeItem(SESSION_KEY);
-  document.getElementById('loginScreen').classList.remove('hidden');
+  currentUser=null;
+  students=[]; archived=[];
+  document.getElementById('authScreen').classList.remove('hidden');
+  document.getElementById('profileDropdown').classList.remove('open');
+  document.getElementById('login-email').value='';
+  document.getElementById('login-pw').value='';
 }
 
-function checkAuth() {
-  const saved = sessionStorage.getItem(SESSION_KEY);
-  if (saved==='admin'||saved==='viewer') setRole(saved);
-  else hideLoading();
+function onLoginSuccess() {
+  document.getElementById('authScreen').classList.add('hidden');
+  // Set profile info
+  const name = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'Admin';
+  const email = currentUser.email || '—';
+  const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('profileAvatar').textContent = initials;
+  document.getElementById('profileName').textContent = name.split(' ')[0];
+  document.getElementById('pd-name').textContent = name;
+  document.getElementById('pd-email').textContent = email;
+  document.getElementById('profile-avatar-big').textContent = initials;
+  document.getElementById('pi-name').textContent = name;
+  document.getElementById('pi-email').textContent = email;
+
+  showLoading('Loading student records…');
+  loadData().then(()=>{ refreshAll(); hideLoading(); checkYearRollover(); });
 }
+
+function toggleProfile() {
+  document.getElementById('profileDropdown').classList.toggle('open');
+}
+
+document.addEventListener('click', e=>{
+  if (!document.getElementById('profileDropdown').contains(e.target) &&
+      !document.querySelector('.profile-btn').contains(e.target)) {
+    document.getElementById('profileDropdown').classList.remove('open');
+  }
+});
 
 // ══════════════════════════════════════════════
 // LOADING
@@ -683,22 +729,45 @@ function showLoading(msg='Loading…') {
 function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
 
 // ══════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════
+async function loadData() {
+  const [s,a] = await Promise.all([sbGetAll('students'), sbGetAll('archived_students')]);
+  students = (s||[]).map(r=>({id:r.id,name:r.name,cls:r.cls,adm:r.adm,total:Number(r.total),paid:Number(r.paid),phone:r.phone}));
+  archived = (a||[]).map(r=>({id:r.id,name:r.name,cls:r.cls,adm:r.adm,total:Number(r.total),paid:Number(r.paid),phone:r.phone,graduatedYear:r.graduated_year}));
+  document.getElementById('syncDot').className='sync-dot';
+  document.getElementById('syncLbl').textContent='Live';
+}
+
+async function pushStudent(s) {
+  document.getElementById('syncDot').className='sync-dot err';
+  document.getElementById('syncLbl').textContent='Syncing…';
+  await sbUpsert('students',{id:s.id,name:s.name,cls:s.cls,adm:s.adm||'',total:s.total,paid:s.paid,phone:s.phone||''});
+  document.getElementById('syncDot').className='sync-dot';
+  document.getElementById('syncLbl').textContent='Live';
+}
+
+async function pushArchive(s) {
+  await sbUpsert('archived_students',{id:s.id,name:s.name,cls:s.cls,adm:s.adm||'',total:s.total,paid:s.paid,phone:s.phone||'',graduated_year:s.graduatedYear});
+}
+
+// ══════════════════════════════════════════════
 // YEAR
 // ══════════════════════════════════════════════
-function getCurrentYear() { return new Date().getFullYear(); }
-function getStoredYear()  { return parseInt(localStorage.getItem(YEAR_KEY)||getCurrentYear()); }
-function setStoredYear(y) { localStorage.setItem(YEAR_KEY,y); }
+const getCurrentYear = () => new Date().getFullYear();
+const getStoredYear  = () => parseInt(localStorage.getItem(YEAR_KEY)||getCurrentYear());
+const setStoredYear  = y  => localStorage.setItem(YEAR_KEY,y);
 
 function updateYearBadge() {
   const y=getStoredYear();
   document.getElementById('yrBadge').textContent=y+'/'+(y+1);
   document.getElementById('print-yr').textContent=y+' / '+(y+1);
+  document.getElementById('pi-year').textContent=y+' / '+(y+1);
 }
 
 function checkYearRollover() {
-  if (currentRole!=='admin') return;
-  if (getCurrentYear()>getStoredYear() && students.length>0)
-    setTimeout(()=>openPromoteModal(true),600);
+  if(getCurrentYear()>getStoredYear()&&students.length>0)
+    setTimeout(()=>openPromoteModal(),700);
 }
 
 // ══════════════════════════════════════════════
@@ -716,6 +785,7 @@ function buildNav() {
   let html=`<button class="tab-btn active" data-t="overview" onclick="switchTab('overview')">📊 Overview</button>`;
   CLASSES.forEach((c,i)=>{ html+=`<button class="tab-btn" data-t="c${i}" onclick="switchTab('c${i}')">${c}</button>`; });
   html+=`<button class="tab-btn archive-tab" data-t="archive" onclick="switchTab('archive')">📦 Archive</button>`;
+  html+=`<button class="tab-btn" data-t="profile" onclick="switchTab('profile')">👤 Profile</button>`;
   nav.innerHTML=html;
 }
 
@@ -740,13 +810,13 @@ function buildPages() {
           <option value="unpaid">Unpaid</option>
         </select>
         <button class="btn btn-ghost" onclick="exportClass(${i})">⬇️ Export</button>
-        <button class="btn btn-accent admin-only" onclick="openAddModal(${i})">+ Add Student</button>
+        <button class="btn btn-accent" onclick="openAddModal(${i})">+ Add Student</button>
       </div>
       <div class="card">
         <div class="card-head"><h2>${cls} — Students</h2><span class="tag" id="rc${i}">0 records</span></div>
         <div class="tbl-scroll">
           <table>
-            <thead><tr><th>#</th><th>Name</th><th>Adm. No.</th><th>Parent Phone</th><th>Amount Paid</th><th>Balance Owed</th><th>Progress</th><th>Status</th><th class="admin-only">Actions</th></tr></thead>
+            <thead><tr><th>#</th><th>Name</th><th>Adm. No.</th><th>Parent Phone</th><th>Amount Paid</th><th>Balance Owed</th><th>Progress</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="tb${i}"></tbody>
           </table>
           <div class="empty" id="em${i}"><div class="empty-icon">📂</div><p>No students yet in ${cls}.</p></div>
@@ -763,6 +833,8 @@ function buildClassDropdown() {
 
 function refreshAll() {
   updateYearBadge();
+  document.getElementById('pi-students').textContent=students.length;
+  document.getElementById('pi-archived').textContent=archived.length;
   renderOverview();
   CLASSES.forEach((_,i)=>renderClass(i));
   renderArchive();
@@ -776,8 +848,13 @@ function switchTab(t) {
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.t===t));
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+t).classList.add('active');
+  document.getElementById('profileDropdown').classList.remove('open');
   if(t==='overview') renderOverview();
   else if(t==='archive') renderArchive();
+  else if(t==='profile') {
+    document.getElementById('pi-students').textContent=students.length;
+    document.getElementById('pi-archived').textContent=archived.length;
+  }
   else renderClass(parseInt(t.slice(1)));
 }
 
@@ -795,7 +872,6 @@ function renderOverview() {
   document.getElementById('ov-owed').textContent=fmt(owed);
   document.getElementById('ov-paid-pct').textContent=n?Math.round(pc/n*100)+'% of students':'—';
   document.getElementById('ov-unpaid-pct').textContent=n?Math.round(uc/n*100)+'% of students':'—';
-
   document.getElementById('ov-tbody').innerHTML=CLASSES.map((cls,i)=>{
     const s=students.filter(x=>x.cls===cls);
     const tot=s.length,pn=s.filter(x=>status(x.paid,x.total)==='paid').length,un=tot-pn;
@@ -835,7 +911,6 @@ function renderClass(i) {
   document.getElementById('rc'+i).textContent=list.length+' record'+(list.length!==1?'s':'');
   if(!list.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
-  const isAdmin=currentRole==='admin';
   tbody.innerHTML=list.map((s,idx)=>{
     const st=status(s.paid,s.total),p=pct(s.paid,s.total);
     const oa=Math.max(0,s.total-s.paid);
@@ -852,11 +927,11 @@ function renderClass(i) {
       <td>${oa>0?`<span class="owed-a">${fmt(oa)}</span>`:`<span style="color:var(--muted)">—</span>`}</td>
       <td><div class="pb-wrap"><div class="pb"><div class="pf" style="width:${p}%;background:${pc2}"></div></div><span class="pct-lbl">${p}%</span></div></td>
       <td><span class="badge ${bc}">${bt}</span></td>
-      ${isAdmin?`<td><div class="acts">
+      <td><div class="acts">
         <button class="btn btn-sm ${ip?'btn-rs':'btn-gs'}" onclick="togglePaid('${s.id}',${i})">${ip?'↩ Unpay':'✓ Mark Paid'}</button>
         <button class="btn btn-sm btn-es" onclick="openEditModal('${s.id}')">Edit</button>
         <button class="btn btn-sm btn-ds" onclick="delStudent('${s.id}',${i})">✕</button>
-      </div></td>`:`<td style="color:var(--muted);font-size:.75rem">—</td>`}
+      </div></td>
     </tr>`;
   }).join('');
 }
@@ -898,46 +973,47 @@ function openPromoteModal() {
   document.getElementById('promote-preview').innerHTML=CLASSES.map((cls,i)=>{
     const n=students.filter(s=>s.cls===cls).length;
     return i===CLASSES.length-1
-      ? `📦 ${cls} (${n} students) → <strong>Archived</strong>`
-      : `➡️ ${cls} (${n} students) → ${CLASSES[i+1]}`;
+      ?`📦 ${cls} (${n} students) → <strong>Archived</strong>`
+      :`➡️ ${cls} (${n} students) → ${CLASSES[i+1]}`;
   }).join('<br>');
   document.getElementById('promoteOverlay').classList.add('open');
 }
-function closePromoteModal() { document.getElementById('promoteOverlay').classList.remove('open'); }
+function closePromoteModal(){document.getElementById('promoteOverlay').classList.remove('open');}
 
-async function confirmPromote() {
+async function confirmPromote(){
   closePromoteModal();
   showLoading('Promoting students… please wait');
   const nowYear=getCurrentYear();
   const grade9=students.filter(s=>s.cls===CLASSES[CLASSES.length-1]);
-
-  // Archive Grade 9
   for(const s of grade9){
     const ar={...s,graduatedYear:nowYear};
     archived.push(ar);
     await pushArchive(ar);
-    if(supabaseReady) await sbDelete('students',s.id);
+    await sbDelete('students',s.id);
   }
-
-  // Promote remaining
   const promoted=students
     .filter(s=>s.cls!==CLASSES[CLASSES.length-1])
     .map(s=>({...s,cls:CLASSES[CLASSES.indexOf(s.cls)+1],paid:0}));
-
   students=promoted;
   for(const s of promoted) await pushStudent(s);
-
   setStoredYear(nowYear);
-  persistLocal();
   hideLoading();
   refreshAll();
-  alert(`✅ Done!\n\nAll students promoted.\n${grade9.length} Grade 9 student(s) archived.\nFees reset for ${nowYear}/${nowYear+1}.`);
+  alert(`✅ Done!\nAll students promoted.\n${grade9.length} Grade 9 student(s) archived.\nFees reset for ${nowYear}/${nowYear+1}.`);
+}
+
+function confirmClearArchive(){
+  if(!confirm('Are you sure you want to permanently delete ALL archived records? This cannot be undone.')) return;
+  if(!confirm('Last warning — this will delete all graduated student records forever. Continue?')) return;
+  archived=[];
+  renderArchive();
+  alert('All archived records cleared.');
 }
 
 // ══════════════════════════════════════════════
 // TOGGLE PAID
 // ══════════════════════════════════════════════
-async function togglePaid(id,i) {
+async function togglePaid(id,i){
   const s=students.find(x=>x.id===id);
   if(!s) return;
   s.paid=status(s.paid,s.total)==='paid'?0:s.total;
@@ -947,9 +1023,9 @@ async function togglePaid(id,i) {
 }
 
 // ══════════════════════════════════════════════
-// MODAL — ADD / EDIT
+// MODAL
 // ══════════════════════════════════════════════
-function openAddModal(clsIdx=null) {
+function openAddModal(clsIdx=null){
   editId=null;
   document.getElementById('modal-title').textContent='Add New Student';
   ['f-name','f-adm','f-phone'].forEach(id=>document.getElementById(id).value='');
@@ -962,7 +1038,7 @@ function openAddModal(clsIdx=null) {
   setTimeout(()=>document.getElementById('f-name').focus(),100);
 }
 
-function openEditModal(id) {
+function openEditModal(id){
   editId=id;
   const s=students.find(x=>x.id===id);
   document.getElementById('modal-title').textContent='Edit Student Record';
@@ -976,10 +1052,10 @@ function openEditModal(id) {
   setTimeout(()=>document.getElementById('f-name').focus(),100);
 }
 
-function closeModal() { document.getElementById('overlay').classList.remove('open'); editId=null; }
-function bgClose(e) { if(e.target===document.getElementById('overlay')) closeModal(); }
+function closeModal(){document.getElementById('overlay').classList.remove('open');editId=null;}
+function bgClose(e){if(e.target===document.getElementById('overlay'))closeModal();}
 
-async function saveStudent() {
+async function saveStudent(){
   const name=document.getElementById('f-name').value.trim();
   const cls=document.getElementById('f-class').value;
   const adm=document.getElementById('f-adm').value.trim();
@@ -990,7 +1066,7 @@ async function saveStudent() {
   if(!cls){alert('Please select a class.');return;}
   if(total<=0){alert('Please enter a valid total fees amount.');return;}
   const rec={id:editId||(Date.now().toString()+Math.random().toString(36).slice(2)),name,cls,adm,total,paid,phone};
-  if(editId) { const idx=students.findIndex(x=>x.id===editId); students[idx]=rec; }
+  if(editId){const idx=students.findIndex(x=>x.id===editId);students[idx]=rec;}
   else students.push(rec);
   await pushStudent(rec);
   closeModal();
@@ -1000,37 +1076,38 @@ async function saveStudent() {
   if(!editId) switchTab('c'+ci);
 }
 
-async function delStudent(id,i) {
+async function delStudent(id,i){
   if(!confirm('Remove this student record? This cannot be undone.')) return;
-  await deleteStudent(id);
+  students=students.filter(s=>s.id!==id);
+  await sbDelete('students',id);
   renderClass(i); renderOverview();
 }
 
 // ══════════════════════════════════════════════
-// EXPORT
+// EXPORT & PRINT
 // ══════════════════════════════════════════════
-function exportClass(i) {
+function exportClass(i){
   const cls=CLASSES[i];
   dlCSV([['No','Name','Class','Adm No','Parent Phone','Total Fees','Amount Paid','Balance','Status'],
     ...students.filter(s=>s.cls===cls).map((s,idx)=>[idx+1,s.name,s.cls,s.adm||'',s.phone||'',s.total,s.paid,Math.max(0,s.total-s.paid),status(s.paid,s.total).toUpperCase()])],
     'fees_'+cls.replace(/ /g,'_'));
 }
-function exportAll() {
+function exportAll(){
   dlCSV([['No','Name','Class','Adm No','Parent Phone','Total Fees','Amount Paid','Balance','Status'],
     ...students.map((s,i)=>[i+1,s.name,s.cls,s.adm||'',s.phone||'',s.total,s.paid,Math.max(0,s.total-s.paid),status(s.paid,s.total).toUpperCase()])],
     'kiambogo_fees_all');
 }
-function exportArchive() {
+function exportArchive(){
   dlCSV([['No','Name','Adm No','Parent Phone','Year Graduated','Total Fees','Amount Paid','Balance','Status'],
     ...archived.map((s,i)=>[i+1,s.name,s.adm||'',s.phone||'',s.graduatedYear||'',s.total,s.paid,Math.max(0,s.total-s.paid),status(s.paid,s.total).toUpperCase()])],
     'kiambogo_archived');
 }
-function dlCSV(rows,name) {
+function dlCSV(rows,name){
   const a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n'));
   a.download=name+'_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
 }
-function printReport() {
+function printReport(){
   document.getElementById('print-date').textContent='Printed: '+new Date().toLocaleDateString('en-KE',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   window.print();
 }
@@ -1038,22 +1115,11 @@ function printReport() {
 // ══════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════
-// Check if Supabase is configured
-if(cfg.url && cfg.key) {
-  supabaseReady=true;
-  document.getElementById('setupBanner').classList.add('hidden');
-} else {
-  // Load local data immediately so app works offline
-  loadLocalFallback();
-}
-
 buildNav();
 buildPages();
 buildClassDropdown();
 updateYearBadge();
-checkAuth(); // auto-login if session exists, else show login screen + hide loader
-// If not auto-logged in, hide loader after a tick
-setTimeout(()=>{ if(!currentRole) hideLoading(); },200);
+hideLoading();
 </script>
 </body>
 </html>
